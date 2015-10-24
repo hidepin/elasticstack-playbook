@@ -18,6 +18,14 @@
     - "{{ elasticsearch_rpm }}"
   when: is_elasticsearch_installed.rc == 1
 
+- name: elasticsarch startup setting
+  template: src=etc_sysconfig_elasticsearch.j2 dest=/etc/sysconfig/elasticsearch owner=root group=root mode=0644
+  notify: elasticsearch restart
+
+- name: elasticsarch config setting
+  template: src=elasticsearch.yml.j2 dest=/etc/elasticsearch/elasticsearch.yml owner=root group=root mode=0644
+  notify: elasticsearch restart
+
 - name: kibana check
   command: ls /var/www/html/kibana
   register: is_kibana_installed
@@ -40,19 +48,11 @@
 - name: current kibana link
   file: src={{ is_kibana_extracted.stdout }} dest=/var/www/html/kibana state=link
 
-- name: elasticsarch startup setting
-  template: src=etc_sysconfig_elasticsearch.j2 dest=/etc/sysconfig/elasticsearch owner=root group=root mode=0644
-  notify: elasticsearch restart
-
-- name: elasticsarch config setting
-  template: src=elasticsearch.yml.j2 dest=/etc/elasticsearch/elasticsearch.yml owner=root group=root mode=0644
-  notify: elasticsearch restart
+- name: kibana config setting
+  template: src=kibana_config.js.j2 dest=/var/www/html/kibana/config.js owner=root group=root mode=0644
 
 - name: elasticsearch kibana service
   service: name={{item}} state=started enabled=yes
   with_items:
     - elasticsearch
     - httpd
-
-- name: kibana config setting
-  template: src=kibana_config.js.j2 dest=/var/www/html/kibana/config.js owner=root group=root mode=0644
