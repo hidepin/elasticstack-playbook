@@ -1,7 +1,42 @@
-ansible_ssh_user: root
-sudo: no
-colon: ":"
-ntp_server: 192.168.0.1
+-#proxy_env:
+-#  http_proxy: http://172.16.111.1:8080
+-#  https_proxy: http://172.16.111.1:8080
+rhel_subscription:
+  username: 'username'
+  password: 'password'
+  pool: 'pool'
 elasticsearch_rpm: https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.2.noarch.rpm
 kibana_pkg: https://download.elastic.co/kibana/kibana/kibana-4.1.2-linux-x64.tar.gz
 kibana_user: kibana
+
+############################################################
+# common role settin
+############################################################
+exec_common_role: True
+
+ntp_server: "{{ ansible_default_ipv4.gateway }}"
+kdump_partition: "/dump"
+generate_host: False
+common_user:
+  # user/password="hidepin/hidepin123"
+  - { name: 'hidepin', password: '$1$SomeSalt$buSRLdQkj4QgWzx.tbjqv1', uid: '1000', group: 'hidepin', gid: '1000' }
+limits_setting:
+  - { domain: 'root', type: 'soft', item: 'nofile', value: '65536' }
+  - { domain: 'root', type: 'hard', item: 'nofile', value: '65536' }
+tuned_profile: 'default'
+tuned_profile_parameter:
+  main:
+    - { option: 'include', value: 'throughput-performance' }
+  sysctl:
+    - { option: 'net.ipv4.ip_local_port_range', value: '32768 64999' }
+    - { option: 'net.core.somaxconn', value: '511' }
+    - { option: 'net.ipv4.tcp_keepalive_intvl', value: '5' }
+    - { option: 'net.ipv4.tcp_keepalive_probes', value: '5' }
+    - { option: 'net.ipv4.tcp_keepalive_time', value: '60' }
+kernel_update: True
+update_pkg:
+  - glibc
+  - glibc-common
+  - glibc-devel
+  - glibc-headers
+  - systemd
