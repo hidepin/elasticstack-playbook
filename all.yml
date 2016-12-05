@@ -3,7 +3,7 @@
 - hosts: all
   roles:
     - { role: common, when: exec_common_role}
-    - elasticsearch-kibana
+    - elasticsearch
 
   environment:
     "{{ proxy_env }}"
