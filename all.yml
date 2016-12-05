@@ -1,9 +1,18 @@
 ---
 # file: all.yml
-- hosts: all
+- hosts: elk
   roles:
     - { role: common, when: exec_common_role}
+    - elk-common
     - elasticsearch
+
+  environment:
+    "{{ proxy_env }}"
+
+- hosts: elasticsearch
+  roles:
+    - { role: common, when: exec_common_role}
+    - elk-common
 
   environment:
     "{{ proxy_env }}"
