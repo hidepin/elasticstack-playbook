@@ -1,0 +1,9 @@
+[main]
+{% for item in tuned_profile_parameter.main %}
+{{ item.option }} = {{ item.value }}
+{% endfor %}
+
+[sysctl]
+{% for item in tuned_profile_parameter.sysctl %}
+{{ item.option }} = {{ item.value }}
+{% endfor %}
