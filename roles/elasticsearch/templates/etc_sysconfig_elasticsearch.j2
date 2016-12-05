@@ -22,6 +22,7 @@
 
 # Additional Java OPTS
 #ES_JAVA_OPTS=
+ES_JAVA_OPTS={{ ansible_memtotal_mb // 2 }}M
 
 # Configure restart on package upgrade (true, every other setting will lead to not restarting)
 #RESTART_ON_UPGRADE=true
