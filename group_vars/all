@@ -5,9 +5,7 @@ rhel_subscription:
   username: 'username'
   password: 'password'
   pool: 'pool'
-elasticsearch_rpm: https://download.elastic.co/elasticsearch/elasticsearch/elasticsearch-1.7.2.noarch.rpm
-kibana_pkg: https://download.elastic.co/kibana/kibana/kibana-4.1.2-linux-x64.tar.gz
-kibana_user: kibana
+es_cluster_name: 'elasticsearch'
 
 ############################################################
 # common role settin

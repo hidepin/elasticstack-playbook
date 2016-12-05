@@ -15,12 +15,14 @@
 # Use a descriptive name for your cluster:
 #
 #cluster.name: my-application
+cluster.name: {{ es_cluster_name }}
 #
 # ------------------------------------ Node ------------------------------------
 #
 # Use a descriptive name for the node:
 #
 #node.name: node-1
+node.name: {{ ansible_hostname }}
 #
 # Add custom attributes to the node:
 #
