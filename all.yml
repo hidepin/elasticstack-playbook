@@ -1,9 +1,39 @@
 ---
 # file: all.yml
-- hosts: all
+- hosts: elk
   roles:
     - { role: common, when: exec_common_role}
-    - elasticsearch-kibana
+    - elk-common
+    - elasticsearch
+    - kibana
+    - logstash
+
+  environment:
+    "{{ proxy_env }}"
+
+- hosts: elasticsearch
+  roles:
+    - { role: common, when: exec_common_role}
+    - elk-common
+    - elasticsearch
+
+  environment:
+    "{{ proxy_env }}"
+
+- hosts: kibana
+  roles:
+    - { role: common, when: exec_common_role}
+    - elk-common
+    - kibana
+
+  environment:
+    "{{ proxy_env }}"
+
+- hosts: logstash
+  roles:
+    - { role: common, when: exec_common_role}
+    - elk-common
+    - logstash
 
   environment:
     "{{ proxy_env }}"

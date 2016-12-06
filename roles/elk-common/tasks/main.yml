@@ -1,0 +1,23 @@
+---
+# file: roles/elk-common/tasks/main.yml
+- name: register subscription and yum proxy setting
+  include: yum_setup.yml
+
+- block:
+  - name: enable elastic repo
+    copy: >
+      src=elastic.repo
+      dest=/etc/yum.repos.d/elastic.repo
+      owner=root
+      group=root
+      mode=0644
+      backup=yes
+    register: is_elastic_repo_setting
+
+  always:
+  - name: elk-common backup settings
+    include: backup.yml
+    with_flattened:
+      - "{{ is_elastic_repo_setting|default() }}"
+    loop_control:
+      loop_var: backup_item
