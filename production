@@ -3,6 +3,8 @@ xxx.xxx.xxx.xxx
 
 [elasticsearch]
 
+[kibana]
+
 [elasticsearch_nodes:children]
 elk
 elasticsearch

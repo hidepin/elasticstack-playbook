@@ -1,0 +1,4 @@
+---
+# file: roles/kibana/handlers/main.yml
+- name: kibana restart
+  service: name=kibana state=restarted daemon_reload=yes
