@@ -1,2 +1,8 @@
 [elk]
 xxx.xxx.xxx.xxx
+
+[elasticsearch]
+
+[elasticsearch_nodes:children]
+elk
+elasticsearch
