@@ -6,6 +6,7 @@
     - elk-common
     - elasticsearch
     - kibana
+    - logstash
 
   environment:
     "{{ proxy_env }}"
@@ -24,6 +25,15 @@
     - { role: common, when: exec_common_role}
     - elk-common
     - kibana
+
+  environment:
+    "{{ proxy_env }}"
+
+- hosts: logstash
+  roles:
+    - { role: common, when: exec_common_role}
+    - elk-common
+    - logstash
 
   environment:
     "{{ proxy_env }}"

@@ -5,6 +5,8 @@ xxx.xxx.xxx.xxx
 
 [kibana]
 
+[logstash]
+
 [elasticsearch_nodes:children]
 elk
 elasticsearch
