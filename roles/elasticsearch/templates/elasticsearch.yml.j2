@@ -75,6 +75,7 @@ discovery.zen.ping.unicast.hosts: [{{ groups["elasticsearch_nodes"]|join(',') }}
 # Prevent the "split brain" by configuring the majority of nodes (total number of nodes / 2 + 1):
 #
 #discovery.zen.minimum_master_nodes: 3
+discovery.zen.minimum_master_nodes: {{ groups["elasticsearch_nodes"]|count() // 2 + 1 }}
 #
 # For more information, see the documentation at:
 # <https://www.elastic.co/guide/en/elasticsearch/reference/5.0/modules-discovery-zen.html>
