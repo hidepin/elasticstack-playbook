@@ -22,7 +22,7 @@ cluster.name: {{ es_cluster_name }}
 # Use a descriptive name for the node:
 #
 #node.name: node-1
-node.name: {{ ansible_hostname }}
+node.name: ${HOSTNAME}
 #
 # Add custom attributes to the node:
 #
