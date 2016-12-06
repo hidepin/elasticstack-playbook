@@ -5,7 +5,7 @@ rhel_subscription:
   username: 'username'
   password: 'password'
   pool: 'pool'
-es_cluster_name: 'elasticsearch'
+es_cluster_name: 'escluster'
 
 ############################################################
 # common role settin
