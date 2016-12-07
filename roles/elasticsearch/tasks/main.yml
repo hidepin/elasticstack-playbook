@@ -1,7 +1,10 @@
 ---
 # file: roles/elasticsearch/tasks/main.yml
 - name: jdk install
-  package: name={{item}} state=latest enablerepo="*(server|base)-debug*"
+  package: >
+    name={{item}}
+    state=latest
+    enablerepo="{{ (ansible_distribution == 'RedHat') | ternary('rhel-7-server-debug-rpms','base-debuginfo') }}"
   with_items:
     - java-1.8.0-openjdk-devel
     - java-1.8.0-openjdk-debuginfo
