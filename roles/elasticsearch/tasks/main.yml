@@ -3,6 +3,11 @@
 - name: elasticsearch install
   package: name=elasticsearch state=latest
 
+- name: elasticsearch x-pack install
+  shell: >
+    /usr/share/elasticsearch/bin/elasticsearch-plugin install x-pack
+    creates=/usr/share/elasticsearch/plugins/x-pack/NOTICE.txt
+
 - block:
   - name: elasticsarch config setting
     template: >
