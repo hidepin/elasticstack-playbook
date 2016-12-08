@@ -9,7 +9,8 @@
     - logstash
 
   environment:
-    "{{ proxy_env }}"
+    - "{{ proxy_env }}"
+    - ES_JAVA_OPTS: "-Dhttps.proxyHost={{ proxy_env.https_proxy|default('')|regex_replace('^https*://([0-9.]*).*$', '\\1') }} -Dhttps.proxyPort={{ proxy_env.https_proxy|default('')|regex_replace('^https*://.*:([0-9]*)$', '\\1') }}"
 
 - hosts: elasticsearch
   roles:
@@ -18,7 +19,8 @@
     - elasticsearch
 
   environment:
-    "{{ proxy_env }}"
+    - "{{ proxy_env }}"
+    - ES_JAVA_OPTS: "-Dhttps.proxyHost={{ proxy_env.https_proxy|default('')|regex_replace('^https*://([0-9.]*).*$', '\\1') }} -Dhttps.proxyPort={{ proxy_env.https_proxy|default('')|regex_replace('^https*://.*:([0-9]*)$', '\\1') }}"
 
 - hosts: kibana
   roles:
@@ -27,7 +29,8 @@
     - kibana
 
   environment:
-    "{{ proxy_env }}"
+    - "{{ proxy_env }}"
+    - ES_JAVA_OPTS: "-Dhttps.proxyHost={{ proxy_env.https_proxy|default('')|regex_replace('^https*://([0-9.]*).*$', '\\1') }} -Dhttps.proxyPort={{ proxy_env.https_proxy|default('')|regex_replace('^https*://.*:([0-9]*)$', '\\1') }}"
 
 - hosts: logstash
   roles:
@@ -36,4 +39,5 @@
     - logstash
 
   environment:
-    "{{ proxy_env }}"
+    - "{{ proxy_env }}"
+    - ES_JAVA_OPTS: "-Dhttps.proxyHost={{ proxy_env.https_proxy|default('')|regex_replace('^https*://([0-9.]*).*$', '\\1') }} -Dhttps.proxyPort={{ proxy_env.https_proxy|default('')|regex_replace('^https*://.*:([0-9]*)$', '\\1') }}"
