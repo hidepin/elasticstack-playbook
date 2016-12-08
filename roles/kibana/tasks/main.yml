@@ -5,7 +5,7 @@
 
 - name: kibana x-pack install
   shell: >
-    /usr/share/kibana/bin/kibana-plugin install x-pack
+    sudo -u kibana /usr/share/kibana/bin/kibana-plugin install x-pack
     creates=/usr/share/kibana/plugins/x-pack/NOTICE.txt
 
 - block:
