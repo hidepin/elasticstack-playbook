@@ -7,16 +7,19 @@
   shell: >
     /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch x-pack
     creates=/usr/share/elasticsearch/plugins/x-pack/plugin-descriptor.properties
+  notify: elasticsearch restart
 
 - name: elasticsearch analysis-icu plugin install
   shell: >
     /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch analysis-icu
     creates=/usr/share/elasticsearch/plugins/analysis-icu/plugin-descriptor.properties
+  notify: elasticsearch restart
 
 - name: elasticsearch analysis-kuromoji plugin install
   shell: >
     /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch analysis-kuromoji
     creates=/usr/share/elasticsearch/plugins/analysis-kuromoji/plugin-descriptor.properties
+  notify: elasticsearch restart
 
 - block:
   - name: elasticsarch config setting
