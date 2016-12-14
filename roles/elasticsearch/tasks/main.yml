@@ -19,6 +19,25 @@
     creates=/usr/share/elasticsearch/plugins/analysis-kuromoji/plugin-descriptor.properties
 
 - block:
+  - name: create elasticsearch systemd dir
+    file: >
+      path="/etc/systemd/system/elasticsearch.service.d"
+      state=directory
+      owner=root
+      group=root
+      mode=0755
+
+  - name: elasticsarch systemd setting
+    copy: >
+      src=limit_memlock.conf
+      dest=/etc/systemd/system/elasticsearch.service.d
+      owner=root
+      group=root
+      mode=0644
+      backup=yes
+    register: is_elasticsearch_systemd_setting
+    notify: elasticsearch restart
+
   - name: elasticsarch config setting
     template: >
       src=elasticsearch.yml.j2
@@ -45,7 +64,7 @@
   - name: elk-common backup settings
     include: backup.yml
     with_flattened:
-      - "{{ is_etc_sysconfig_elasticsearch_setting|default() }}"
+      - "{{ is_elasticsearch_systemd_setting|default() }}"
       - "{{ is_elasticsearch_setting|default() }}"
       - "{{ is_elasticsearch_jvm_setting|default() }}"
     loop_control:
