@@ -21,6 +21,12 @@
     creates=/usr/share/elasticsearch/plugins/analysis-kuromoji/plugin-descriptor.properties
   notify: elasticsearch restart
 
+- name: elasticsearch ingest-geoip plugin install
+  shell: >
+    /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch ingest-geoip
+    creates=/usr/share/elasticsearch/plugins/ingest-geoip/plugin-descriptor.properties
+  notify: elasticsearch restart
+
 - block:
   - name: create elasticsearch systemd dir
     file: >
