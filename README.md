@@ -55,7 +55,6 @@ OS初期インストール時の共通設定。
 - proxy_env_https_proxy      # httpのproxyサーバを使用する場合指定
 - rhel_subscription.username # rhelのsubscription設定する場合に指定 (rhel_subscriptionを設定していれば、省略時シナリオ実行時に入力することになる)
 - rhel_subscription.password # rhelのsubscription設定する場合に指定 (rhel_subscriptionを設定していれば、省略時シナリオ実行時に入力することになる)
-- rhel_subscription.pool     # rhelのsubscription設定する場合に指定 (rhel_subscriptionを設定していれば、省略時シナリオ実行時に入力することになる)
 - ntp_server                 # ntpサーバ
 - grub_cfg_uefi              # UEFIモードでgrub2-mkconfigで指定するパスを指定
 - grub_cfg_legacy            # BIOSモードでgrub2-mkconfigで指定するパスを指定

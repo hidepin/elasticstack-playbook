@@ -13,25 +13,17 @@
     register: rhel_subscription_password
     when: rhel_subscription.password is undefined
 
-  - name: input rhel_subscription pool
-    pause: prompt="input rhel subscription pool"
-    run_once: true
-    register: rhel_subscription_pool
-    when: rhel_subscription.pool is undefined
-
   - name: set rhel_subscription
     set_fact:
       rhel_subscription:
         username: "{{ (rhel_subscription_username.user_input is defined )|ternary(rhel_subscription_username.user_input|default(), rhel_subscription.username) }}"
         password: "{{ (rhel_subscription_password.user_input is defined )|ternary(rhel_subscription_password.user_input|default(), rhel_subscription.password) }}"
-        pool: "{{ (rhel_subscription_pool.user_input is defined )|ternary(rhel_subscription_pool.user_input|default(), rhel_subscription.pool) }}"
 
   - name: rhel subscription
     redhat_subscription: >
       state=present
       username="{{ rhel_subscription.username|default() }}"
       password="{{ rhel_subscription.password|default() }}"
-      pool="{{ rhel_subscription.pool|default() }}"
       autosubscribe=true
   when: >
     ansible_distribution == "RedHat" and
