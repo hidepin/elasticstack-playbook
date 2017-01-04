@@ -33,13 +33,14 @@ OS初期インストール時の共通設定。
 1. rhel subscription設定 (rhel_subscription設定時に実施)
 2. runlebelをmulti-user.targetに設定
 3. firewallの無効化
-4. chrony設定
-5. journaldの永続化設定
-6. rsyslog設定
-7. abrt設定
-8. kdump設定 (要再起動)
-9. limits設定
-10. tuned設定
+4. 仮想bridgeの無効化
+5. chrony設定
+6. journaldの永続化設定
+7. rsyslog設定
+8. abrt設定
+9. kdump設定 (要再起動)
+10. limits設定
+11. tuned設定
 
 # 動作確認済み環境
 
