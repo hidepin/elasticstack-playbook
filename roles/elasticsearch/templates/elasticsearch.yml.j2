@@ -15,7 +15,7 @@
 # Use a descriptive name for your cluster:
 #
 #cluster.name: my-application
-cluster.name: {{ es_cluster_name }}
+cluster.name: {{ ('aio_standalone' in group_names) | ternary([es_cluster_name,ansible_hostname]|join('-'),es_cluster_name) }}
 #
 # ------------------------------------ Node ------------------------------------
 #
@@ -71,12 +71,18 @@ network.host: _local_, _site_
 # The default list of hosts is ["127.0.0.1", "[::1]"]
 #
 #discovery.zen.ping.unicast.hosts: ["host1", "host2"]
+{% if not 'aio_standalone' in group_names %}
 discovery.zen.ping.unicast.hosts: [{{ groups["elasticsearch_nodes"]|join(',') }}]
+{% endif %}
 #
 # Prevent the "split brain" by configuring the majority of nodes (total number of nodes / 2 + 1):
 #
 #discovery.zen.minimum_master_nodes: 3
+{% if 'aio_standalone' in group_names %}
+discovery.zen.minimum_master_nodes: 1
+{% else %}
 discovery.zen.minimum_master_nodes: {{ groups["elasticsearch_nodes"]|count() // 2 + 1 }}
+{% endif %}
 #
 # For more information, see the documentation at:
 # <https://www.elastic.co/guide/en/elasticsearch/reference/5.0/modules-discovery-zen.html>
