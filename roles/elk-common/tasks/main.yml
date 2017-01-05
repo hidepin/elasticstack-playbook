@@ -34,4 +34,5 @@
   when: >
     'elk' in group_names or
     'elasticsearch' in group_names or
-    'logstash' in group_names
+    'logstash' in group_names or
+    'aio_standalone' in group_names

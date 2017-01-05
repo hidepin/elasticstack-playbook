@@ -1,6 +1,8 @@
 ---
 # file: all.yml
-- hosts: elk
+- hosts:
+    - elk
+    - aio_standalone
   roles:
     - { role: common, when: exec_common_role}
     - elk-common

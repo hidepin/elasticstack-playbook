@@ -10,3 +10,5 @@ xxx.xxx.xxx.xxx
 [elasticsearch_nodes:children]
 elk
 elasticsearch
+
+[aio_standalone]
