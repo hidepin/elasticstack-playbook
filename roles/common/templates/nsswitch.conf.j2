@@ -36,8 +36,13 @@ group:      files sss
 #initgroups: files
 
 #hosts:     db files nisplus nis dns
+{% if ansible_distribution == "Fedora" %}
+###hosts:      files mdns4_minimal [NOTFOUND=return] dns
+hosts:      files mdns4_minimal [NOTFOUND=return]
+{% else %}
 ###hosts:      files dns myhostname
 hosts:      files myhostname
+{% endif %}
 
 # Example - obey only what nisplus tells us...
 #services:   nisplus [NOTFOUND=return] files
@@ -45,7 +50,7 @@ hosts:      files myhostname
 #protocols:  nisplus [NOTFOUND=return] files
 #rpc:        nisplus [NOTFOUND=return] files
 #ethers:     nisplus [NOTFOUND=return] files
-#netmasks:   nisplus [NOTFOUND=return] files     
+#netmasks:   nisplus [NOTFOUND=return] files
 
 bootparams: nisplus [NOTFOUND=return] files
 
@@ -62,4 +67,3 @@ publickey:  nisplus
 
 automount:  files
 aliases:    files nisplus
-

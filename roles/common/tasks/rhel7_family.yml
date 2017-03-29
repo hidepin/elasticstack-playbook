@@ -23,7 +23,7 @@
 
 - block:
   - name: (rhel7 family) chrony packages install
-    yum: name=chrony state=present
+    package: name=chrony state=present
     when: ntp_server is defined
 
   - name: (rhel7 family) chrony.conf settings
@@ -63,14 +63,16 @@
       backup=yes
     register: is_rsyslog_setting
     notify: rsyslog restart
+    when: >
+      not ansible_distribution == "Fedora"
 
   - name: (rhel7 family) abrt check
     stat: path=/etc/abrt/abrt.conf
     register: abrt_conf
 
   - name: (rhel7 family) abrt.conf settings
-    copy: >
-      src=abrt.conf
+    template: >
+      src=abrt.conf.j2
       dest=/etc/abrt/abrt.conf
       owner=root
       group=root
@@ -98,8 +100,8 @@
     changed_when: false
 
   - name: (rhel7 family) grub settings (kdump and disable ipv6)
-    copy: >
-      src=etc_default_grub
+    template: >
+      src=etc_default_grub.j2
       dest=/etc/default/grub
       owner=root
       group=root
@@ -155,6 +157,10 @@
       backup=yes
     with_items: "{{ limits_setting }}"
     register: is_limits_setting
+
+  - name: (rhel7 family) tuned packages install
+    package: name=tuned state=present
+    when: ansible_distribution == "Fedora"
 
   - name: (rhel7 family) create tuned profile dir
     file: >
