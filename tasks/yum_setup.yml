@@ -39,6 +39,21 @@
       mode=0644
       backup=yes
     register: is_yum_proxy_setting
+    when: >
+      ansible_os_family == "RedHat" and
+      not ansible_distribution == "Fedora"
+
+  - name: dnf proxy settings
+    template: >
+      src=dnf.conf.j2
+      dest=/etc/dnf/dnf.conf
+      owner=root
+      group=root
+      mode=0644
+      backup=yes
+    register: is_yum_proxy_setting
+    when: >
+      ansible_distribution == "Fedora"
 
   always:
   - name: common backup settings

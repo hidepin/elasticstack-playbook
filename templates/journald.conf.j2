@@ -18,21 +18,36 @@ Storage=persistent
 #Seal=yes
 #SplitMode=uid
 #SyncIntervalSec=5m
+{% if ansible_distribution == "Fedora" %}
+#RateLimitIntervalSec=30s
+RateLimitIntervalSec=0s
+{% else %}
 #RateLimitInterval=30s
 RateLimitInterval=0s
+{% endif %}
 #RateLimitBurst=1000
 #SystemMaxUse=
 #SystemKeepFree=
 #SystemMaxFileSize=
 SystemMaxFileSize=200M
+{% if ansible_distribution == "Fedora" %}
+#SystemMaxFiles=100
+{% endif %}
 #RuntimeMaxUse=
 #RuntimeKeepFree=
 #RuntimeMaxFileSize=
+{% if ansible_distribution == "Fedora" %}
+#RuntimeMaxFiles=100
+{% endif %}
 #MaxRetentionSec=
 MaxRetentionSec=100day
 #MaxFileSec=1month
 MaxFileSec=1day
+{% if ansible_distribution == "Fedora" %}
+#ForwardToSyslog=no
+{% else %}
 #ForwardToSyslog=yes
+{% endif %}
 #ForwardToKMsg=no
 #ForwardToConsole=no
 #ForwardToWall=yes

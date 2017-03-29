@@ -28,7 +28,7 @@ OS初期インストール時の共通設定。
 3. firewallの無効化
 4. ntpの設定
 
-## RHEL7/CentOS7設定
+## RHEL7/CentOS7設定/Fedora25
 
 1. rhel subscription設定 (rhel_subscription設定時に実施)
 2. runlebelをmulti-user.targetに設定
@@ -36,7 +36,7 @@ OS初期インストール時の共通設定。
 4. 仮想bridgeの無効化
 5. chrony設定
 6. journaldの永続化設定
-7. rsyslog設定
+7. rsyslog設定 (Fedora25以外)
 8. abrt設定
 9. kdump設定 (要再起動)
 10. limits設定
@@ -48,6 +48,7 @@ OS初期インストール時の共通設定。
 - RHEL7
 - CentOS6 (見直し中)
 - CentOS7
+- Fedora25
 
 # 設定
 
