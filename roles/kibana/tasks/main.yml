@@ -1,7 +1,9 @@
 ---
 # file: roles/kibana/tasks/main.yml
 - name: kibana install
-  package: name=kibana state=latest
+  package:
+    name: kibana
+    state: latest
 
 - name: kibana x-pack install
   shell: >
@@ -10,13 +12,13 @@
 
 - block:
   - name: kibana config setting
-    template: >
-      src=kibana.yml.j2
-      dest=/etc/kibana/kibana.yml
-      owner=root
-      group=root
-      mode=0664
-      backup=yes
+    template:
+      src: kibana.yml.j2
+      dest: /etc/kibana/kibana.yml
+      owner: root
+      group: root
+      mode: 0664
+      backup: yes
     register: is_kibana_setting
     notify: kibana restart
 
@@ -29,4 +31,8 @@
       loop_var: backup_item
 
 - name: enable kibana service
-  service: name=kibana state=started enabled=yes daemon_reload=yes
+  service:
+    name: kibana
+    state: started
+    enabled: yes
+    daemon_reload: yes

@@ -5,13 +5,13 @@
 
 - block:
   - name: enable elastic repo
-    copy: >
-      src=elastic.repo
-      dest=/etc/yum.repos.d/elastic.repo
-      owner=root
-      group=root
-      mode=0644
-      backup=yes
+    copy:
+      src: elastic.repo
+      dest: /etc/yum.repos.d/elastic.repo
+      owner: root
+      group: root
+      mode: 0644
+      backup: yes
     register: is_elastic_repo_setting
 
   always:
@@ -23,10 +23,10 @@
       loop_var: backup_item
 
 - name: jdk install
-  package: >
-    name={{item}}
-    state=latest
-    enablerepo="{{ (ansible_distribution == 'RedHat') | ternary('rhel-7-server-debug-rpms','base-debuginfo') }}"
+  package:
+    name: "{{item}}"
+    state: latest
+    enablerepo: "{{ (ansible_distribution == 'RedHat') | ternary('rhel-7-server-debug-rpms','base-debuginfo') }}"
   with_items:
     - java-1.8.0-openjdk-devel
     - java-1.8.0-openjdk-debuginfo

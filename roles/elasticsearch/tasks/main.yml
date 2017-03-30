@@ -1,7 +1,9 @@
 ---
 # file: roles/elasticsearch/tasks/main.yml
 - name: elasticsearch install
-  package: name=elasticsearch state=latest
+  package:
+    name: elasticsearch
+    state: latest
 
 - name: elasticsearch x-pack plugin install
   shell: >
@@ -29,43 +31,43 @@
 
 - block:
   - name: create elasticsearch systemd dir
-    file: >
-      path="/etc/systemd/system/elasticsearch.service.d"
-      state=directory
-      owner=root
-      group=root
-      mode=0755
+    file:
+      path: "/etc/systemd/system/elasticsearch.service.d"
+      state: directory
+      owner: root
+      group: root
+      mode: 0755
 
   - name: elasticsarch systemd setting
-    copy: >
-      src=limit_memlock.conf
-      dest=/etc/systemd/system/elasticsearch.service.d
-      owner=root
-      group=root
-      mode=0644
-      backup=yes
+    copy:
+      src: limit_memlock.conf
+      dest: /etc/systemd/system/elasticsearch.service.d
+      owner: root
+      group: root
+      mode: 0644
+      backup: yes
     register: is_elasticsearch_systemd_setting
     notify: elasticsearch restart
 
   - name: elasticsarch config setting
-    template: >
-      src=elasticsearch.yml.j2
-      dest=/etc/elasticsearch/elasticsearch.yml
-      owner=root
-      group=elasticsearch
-      mode=0660
-      backup=yes
+    template:
+      src: elasticsearch.yml.j2
+      dest: /etc/elasticsearch/elasticsearch.yml
+      owner: root
+      group: elasticsearch
+      mode: 0660
+      backup: yes
     register: is_elasticsearch_setting
     notify: elasticsearch restart
 
   - name: elasticsarch jvm setting
-    template: >
-      src=jvm.options.j2
-      dest=/etc/elasticsearch/jvm.options
-      owner=root
-      group=elasticsearch
-      mode=0664
-      backup=yes
+    template:
+      src: jvm.options.j2
+      dest: /etc/elasticsearch/jvm.options
+      owner: root
+      group: elasticsearch
+      mode: 0664
+      backup: yes
     register: is_elasticsearch_jvm_setting
     notify: elasticsearch restart
 
@@ -80,4 +82,8 @@
       loop_var: backup_item
 
 - name: enable elasticsearch service
-  service: name=elasticsearch state=started enabled=yes daemon_reload=yes
+  service:
+    name: elasticsearch
+    state: started
+    enabled: yes
+    daemon_reload: yes
