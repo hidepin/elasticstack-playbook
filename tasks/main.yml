@@ -4,11 +4,13 @@
   include: yum_setup.yml
 
 - name: packages install for ansible
-  package: name="{{ item }}" state=present
+  package:
+    name: "{{ item }}"
+    state: present
   with_items:
     - openssh-clients
     - libselinux-python
-  when: >
+  when:
     ansible_os_family == "RedHat" and
     not ansible_distribution == "Fedora"
 
@@ -18,34 +20,34 @@
 
 - block:
   - name: disable selinux setting
-    copy: >
-      src=etc_selinux_config
-      dest=/etc/selinux/config
-      owner=root
-      group=root
-      mode=0644
-      backup=yes
+    copy:
+      src: etc_selinux_config
+      dest: /etc/selinux/config
+      owner: root
+      group: root
+      mode: 0644
+      backup: yes
     register: is_selinux_setting
 
   - name: generate hosts files
-    lineinfile: >
-      dest=/etc/hosts
-      regexp='^{{ item }}.*'
-      line="{{ item }} {{ hostvars[item].ansible_fqdn }} {{ hostvars[item].ansible_hostname }}"
-      state=present
-      backup=yes
+    lineinfile:
+      dest: /etc/hosts
+      regexp: '^{{ item }}.*'
+      line: "{{ item }} {{ hostvars[item].ansible_fqdn }} {{ hostvars[item].ansible_hostname }}"
+      state: present
+      backup: yes
     when: hostvars[item].ansible_fqdn is defined and generate_host
     register: is_hosts_setting
     with_items: "{{ groups['all'] }}"
 
   - name: nsswitch.conf settings
-    template: >
-      src=nsswitch.conf.j2
-      dest=/etc/nsswitch.conf
-      owner=root
-      group=root
-      mode=0644
-      backup=yes
+    template:
+      src: nsswitch.conf.j2
+      dest: /etc/nsswitch.conf
+      owner: root
+      group: root
+      mode: 0644
+      backup: yes
     register: is_nsswitch_setting
     when: ansible_dns.nameservers is undefined
 
@@ -72,23 +74,25 @@
   when: kernel_update
 
 - name: update package
-  package: name={{ item }} state=latest
+  package:
+    name: "{{ item }}"
+    state: latest
   with_items: "{{ update_pkg }}"
 
 - name: Add common group
-  group: >
-    name="{{ item.group }}"
-    gid="{{ item.gid }}"
+  group:
+    name: "{{ item.group }}"
+    gid: "{{ item.gid }}"
   with_items: "{{ common_user }}"
   when: common_user is defined and common_user != None
 
 - name: Add common user
-  user: >
-    name="{{ item.name }}"
-    password="{{ item.password }}"
-    uid="{{ item.uid }}"
-    group="{{ item.group }}"
-    comment="{{ item.name }}"
+  user:
+    name: "{{ item.name }}"
+    password: "{{ item.password }}"
+    uid: "{{ item.uid }}"
+    group: "{{ item.group }}"
+    comment: "{{ item.name }}"
   with_items: "{{ common_user }}"
   when: common_user is defined and common_user != None
 
