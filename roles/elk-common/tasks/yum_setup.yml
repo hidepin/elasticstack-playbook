@@ -27,7 +27,7 @@
       username: "{{ rhel_subscription.username|default() }}"
       password: "{{ rhel_subscription.password|default() }}"
       autosubscribe: true
-  when:
+  when: >
     ansible_distribution == "RedHat" and
     rhel_subscription is defined
 
@@ -41,7 +41,7 @@
       mode: 0644
       backup: yes
     register: is_yum_proxy_setting
-    when:
+    when: >
       ansible_os_family == "RedHat" and
       not ansible_distribution == "Fedora"
 
@@ -54,8 +54,7 @@
       mode: 0644
       backup: yes
     register: is_yum_proxy_setting
-    when:
-      ansible_distribution == "Fedora"
+    when: ansible_distribution == "Fedora"
 
   always:
   - name: common backup settings

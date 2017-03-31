@@ -35,7 +35,7 @@
       state: absent
     when: backup_file is defined
 
-  when:
+  when: >
     backup_item is defined and
     backup_item != "" and
     backup_item|changed
