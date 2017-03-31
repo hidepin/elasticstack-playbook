@@ -1,4 +1,6 @@
 ---
 # file: roles/logstash/tasks/main.yml
 - name: logstash install
-  package: name=logstash state=latest
+  package:
+    name: logstash
+    state: latest
