@@ -10,7 +10,7 @@
   with_items:
     - openssh-clients
     - libselinux-python
-  when:
+  when: >
     ansible_os_family == "RedHat" and
     not ansible_distribution == "Fedora"
 

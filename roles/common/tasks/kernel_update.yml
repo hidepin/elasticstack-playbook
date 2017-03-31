@@ -25,8 +25,7 @@
       - kernel-headers
       - perf
 
-  when:
-    ansible_distribution != "Fedora"
+  when: ansible_distribution != "Fedora"
 
 - block:
   - name: check kernel update version
@@ -55,5 +54,4 @@
       - kernel-headers
       - perf
 
-  when:
-    ansible_distribution == "Fedora"
+  when: ansible_distribution == "Fedora"
