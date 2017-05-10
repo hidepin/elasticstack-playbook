@@ -33,11 +33,6 @@ aio_standaloneに指定したノードは、それぞれのノードが1つの�
 
   独立したAll-in-Oneのクラスタを構築する
 
-# 動作確認済み環境
-
-- RHEL7
-- CentOS7
-
 # 設定
 
 - es_cluster_name           # Elasticsearchのクラスタ名を指定する(aio_standaloneの場合はクラスタ名にホスト名が加えられる)
@@ -46,6 +41,26 @@ aio_standaloneに指定したノードは、それぞれのノードが1つの�
 - xpack_graph_enabled       # xpackのgraph機能の有効無効を設定する(サブスクリプションがない場合1ヶ月しか使用できない)
 - xpack_watcher_enabled     # xpackのwatcher機能の有効無効を設定する(サブスクリプションがない場合1ヶ月しか使用できない)
 - xpack_reporting_enabled   # xpackのreporting機能の有効無効を設定する(サブスクリプションがない場合1ヶ月しか使用できない)
+- xpack_ml_enabled          # xpackのmachine learning機能の有効無効を設定する(サブスクリプションがない場合1ヶ月しか使用できない)
+
+# 実行方法
+
+- インストール方法
+
+  ```
+  ansible-playbook site.yml
+  ```
+
+- アップグレード方法
+
+  ```
+  ansible-playbook -e upgrade=true site.yml
+  ```
+
+# 動作確認済み環境
+
+- RHEL7
+- CentOS7
 
 # 依存関係
 
