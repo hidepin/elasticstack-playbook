@@ -1,5 +1,10 @@
 ---
 # defaults file for elasticsearch
+elasticsearch_plugins:
+  - { plugin: 'x-pack', creates: '/usr/share/elasticsearch/plugins/x-pack/plugin-descriptor.properties' }
+  - { plugin: 'analysis-icu', creates: '/usr/share/elasticsearch/plugins/analysis-icu/plugin-descriptor.properties' }
+  - { plugin: 'analysis-kuromoji', creates: '/usr/share/elasticsearch/plugins/analysis-kuromoji/plugin-descriptor.properties' }
+  - { plugin: 'ingest-geoip', creates: '/usr/share/elasticsearch/plugins/ingest-geoip/plugin-descriptor.properties' }
 es_cluster_name: 'escluster'
 xpack_security_enabled: False
 xpack_monitoring_enabled: True
