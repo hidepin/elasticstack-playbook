@@ -1,33 +1,21 @@
 ---
 # file: roles/elasticsearch/tasks/main.yml
+- name: upgrade elasticsearch
+  include: upgrade.yml
+  when: "{{ upgrade|default('false') }}"
+
 - name: elasticsearch install
   package:
     name: elasticsearch
     state: latest
 
-- name: elasticsearch x-pack plugin install
-  shell: >
-    /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch x-pack
-    creates=/usr/share/elasticsearch/plugins/x-pack/plugin-descriptor.properties
+- name: elasticsearch plugin install
+  shell: |
+    /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch {{ item.plugin }}
+  args:
+    creates: "{{ item.creates }}"
   notify: elasticsearch restart
-
-- name: elasticsearch analysis-icu plugin install
-  shell: >
-    /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch analysis-icu
-    creates=/usr/share/elasticsearch/plugins/analysis-icu/plugin-descriptor.properties
-  notify: elasticsearch restart
-
-- name: elasticsearch analysis-kuromoji plugin install
-  shell: >
-    /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch analysis-kuromoji
-    creates=/usr/share/elasticsearch/plugins/analysis-kuromoji/plugin-descriptor.properties
-  notify: elasticsearch restart
-
-- name: elasticsearch ingest-geoip plugin install
-  shell: >
-    /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch ingest-geoip
-    creates=/usr/share/elasticsearch/plugins/ingest-geoip/plugin-descriptor.properties
-  notify: elasticsearch restart
+  with_items: "{{ elasticsearch_plugins }}"
 
 - block:
   - name: create elasticsearch systemd dir
