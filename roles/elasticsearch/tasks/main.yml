@@ -1,5 +1,10 @@
 ---
 # file: roles/elasticsearch/tasks/main.yml
+- name: upgrade elasticsearch
+  include: upgrade.yml
+  tags:
+    - upgrade
+
 - name: elasticsearch install
   package:
     name: elasticsearch

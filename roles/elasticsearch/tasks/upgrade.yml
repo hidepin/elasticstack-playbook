@@ -1,0 +1,12 @@
+---
+# file: roles/elasticsearch/tasks/upgrade.yml
+- name: disable elasticsearch service
+  service:
+    name: elasticsearch
+    state: stopped
+    enabled: no
+
+- name: elasticsearch plugin remove
+  shell: |
+    "/usr/share/elasticsearch/bin/elasticsearch-plugin remove --batch {{ item.plugin }}"
+  with_items: "{{ elasticsearch_plugins }}"
