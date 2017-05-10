@@ -3,7 +3,7 @@
 - name: disable kibana service
   service:
     name: kibana
-    state: stoppped
+    state: stopped
     enabled: no
 
 - name: kibana plugin remove
