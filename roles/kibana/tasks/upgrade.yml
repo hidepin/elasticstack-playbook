@@ -1,0 +1,12 @@
+---
+# file: roles/kibana/tasks/upgrade.yml
+- name: disable kibana service
+  service:
+    name: kibana
+    state: stoppped
+    enabled: no
+
+- name: kibana plugin remove
+  shell: |
+    "/usr/share/elasticsearch/bin/kibana-plugin remove --batch {{ item.plugin }}"
+  with_items: "{{ kibana_plugins }}"

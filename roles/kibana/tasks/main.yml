@@ -1,5 +1,10 @@
 ---
 # file: roles/kibana/tasks/main.yml
+- name: upgrade kibana
+  include: upgrade.yml
+  tags:
+    - upgrade
+
 - name: kibana install
   package:
     name: kibana
