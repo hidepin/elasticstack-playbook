@@ -2,8 +2,7 @@
 # file: roles/kibana/tasks/main.yml
 - name: upgrade kibana
   include: upgrade.yml
-  tags:
-    - upgrade
+  when: "{{ upgrade|default('false') }}"
 
 - name: kibana install
   package:
@@ -12,7 +11,7 @@
 
 - name: kibana plugin install
   shell: |
-    "/usr/share/elasticsearch/bin/kibana-plugin install --batch {{ item.plugin }}"
+    /usr/share/elasticsearch/bin/kibana-plugin install --batch {{ item.plugin }}
   args:
     creates: "{{ item.creates }}"
   notify: kibana restart
