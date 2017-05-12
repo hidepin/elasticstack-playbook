@@ -1,0 +1,6 @@
+---
+# file: roles/logstash/tasks/upgrade.yml
+- name: logstash plugin remove
+  shell: |
+    /usr/share/logstash/bin/logstash-plugin remove {{ item.plugin }}
+  with_items: "{{ logstash_plugins }}"

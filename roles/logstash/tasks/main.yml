@@ -1,6 +1,17 @@
 ---
 # file: roles/logstash/tasks/main.yml
+- name: upgrade logstash
+  include: upgrade.yml
+  when: "{{ upgrade|default('false') }}"
+
 - name: logstash install
   package:
     name: logstash
     state: latest
+
+- name: logstash plugin install
+  shell: |
+    /usr/share/logstash/bin/logstash-plugin install {{ item.plugin }}
+  args:
+    creates: "{{ item.creates }}"
+  with_items: "{{ logstash_plugins }}"
