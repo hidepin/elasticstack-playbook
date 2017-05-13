@@ -11,7 +11,7 @@
 
 - name: kibana plugin install
   shell: |
-    /usr/share/elasticsearch/bin/kibana-plugin install --batch {{ item.plugin }}
+    /usr/share/kibana/bin/kibana-plugin install --batch {{ item.plugin }}
   args:
     creates: "{{ item.creates }}"
   notify: kibana restart

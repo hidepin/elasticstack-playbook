@@ -8,5 +8,5 @@
 
 - name: kibana plugin remove
   shell: |
-    /usr/share/elasticsearch/bin/kibana-plugin remove {{ item.plugin }}
+    /usr/share/kibana/bin/kibana-plugin remove {{ item.plugin }}
   with_items: "{{ kibana_plugins }}"
