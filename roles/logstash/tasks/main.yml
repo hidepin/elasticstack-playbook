@@ -8,6 +8,10 @@
   package:
     name: logstash
     state: latest
+  register: result
+  until: result | success
+  retries: 3
+  delay: 5
 
 - name: logstash plugin install
   shell: |
