@@ -40,6 +40,10 @@
     package:
       name: chrony
       state: present
+    register: result
+    until: result | success
+    retries: 3
+    delay: 5
     when: ntp_server is defined
 
   - name: (rhel7 family) chrony.conf settings
@@ -180,6 +184,10 @@
     package:
       name: tuned
       state: present
+    register: result
+    until: result | success
+    retries: 3
+    delay: 5
     when: ansible_distribution == "Fedora"
 
   - name: (rhel7 family) create tuned profile dir
