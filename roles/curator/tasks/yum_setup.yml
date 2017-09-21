@@ -1,5 +1,5 @@
 ---
-# file: roles/elk-common/tasks/yum_setup.yml
+# file: roles/curator/tasks/yum_setup.yml
 - block:
   - name: input rhel_subscription username
     pause:
