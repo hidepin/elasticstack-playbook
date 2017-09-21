@@ -1,0 +1,32 @@
+---
+# tasks file for curator
+- name: register subscription and yum proxy setting
+  include: yum_setup.yml
+
+- block:
+  - name: enable curator repo
+    copy:
+      src: curator.repo
+      dest: /etc/yum.repos.d/curator.repo
+      owner: root
+      group: root
+      mode: 0644
+      backup: yes
+    register: is_curator_repo_setting
+
+  always:
+  - name: curator backup settings
+    include: backup.yml
+    with_flattened:
+      - "{{ is_curator_repo_setting|default() }}"
+    loop_control:
+      loop_var: backup_item
+
+- name: curator install
+  package:
+    name: elasticsearch-curator
+    state: latest
+  register: result
+  until: result | success
+  retries: 3
+  delay: 5
