@@ -1,8 +1,5 @@
 ---
 # tasks file for curator
-- name: register subscription and yum proxy setting
-  include: yum_setup.yml
-
 - block:
   - name: enable curator repo
     copy:
