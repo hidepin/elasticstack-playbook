@@ -20,6 +20,10 @@
     creates: "{{ item.creates }}"
   notify: elasticsearch restart
   with_items: "{{ elasticsearch_plugins }}"
+  register: result
+  until: result | success
+  retries: 3
+  delay: 5
 
 - block:
   - name: create elasticsearch systemd dir

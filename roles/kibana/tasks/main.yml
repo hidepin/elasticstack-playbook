@@ -20,6 +20,10 @@
     creates: "{{ item.creates }}"
   notify: kibana restart
   with_items: "{{ kibana_plugins }}"
+  register: result
+  until: result | success
+  retries: 3
+  delay: 5
 
 - block:
   - name: kibana config setting
