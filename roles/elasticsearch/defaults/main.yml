@@ -5,6 +5,7 @@ elasticsearch_plugins:
   - { plugin: 'analysis-icu', creates: '/usr/share/elasticsearch/plugins/analysis-icu/plugin-descriptor.properties' }
   - { plugin: 'analysis-kuromoji', creates: '/usr/share/elasticsearch/plugins/analysis-kuromoji/plugin-descriptor.properties' }
   - { plugin: 'ingest-geoip', creates: '/usr/share/elasticsearch/plugins/ingest-geoip/plugin-descriptor.properties' }
+  - { plugin: 'ingest-user-agent', creates: '/usr/share/elasticsearch/plugins/ingest-user-agent/plugin-descriptor.properties' }
 es_cluster_name: 'escluster'
 xpack_security_enabled: False
 xpack_monitoring_enabled: True
