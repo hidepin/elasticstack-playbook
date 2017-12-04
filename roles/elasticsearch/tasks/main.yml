@@ -26,6 +26,25 @@
   delay: 5
 
 - block:
+  - name: elasticsearch version check
+    shell: basename /usr/share/elasticsearch/lib/elasticsearch* | sed 's/.*-\(.*\).jar/\1/'
+    register: elasticsearch_version
+    changed_when: false
+
+  - name: elasticsearch plugin install
+    shell: |
+      /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch com.floragunn:search-guard-{{ elasticsearch_version.stdout|regex_replace('\..*', '') }}:{{ elasticsearch_version.stdout }}-{{ search_guard_version }}
+    args:
+      creates: "/usr/share/elasticsearch/plugins/search-guard-{{ elasticsearch_version.stdout|regex_replace('\\..*', '') }}"
+    notify: elasticsearch restart
+    register: result
+    until: result | success
+    retries: 3
+    delay: 5
+
+  when: search_guard_enabled
+
+- block:
   - name: create elasticsearch systemd dir
     file:
       path: "/etc/systemd/system/elasticsearch.service.d"
