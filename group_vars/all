@@ -11,6 +11,7 @@ xpack_graph_enabled: False
 xpack_watcher_enabled: False
 xpack_reporting_enabled: False
 xpack_ml_enabled: False
+search_guard_enabled: False
 
 ############################################################
 # common role settin
