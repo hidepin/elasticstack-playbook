@@ -44,7 +44,7 @@
 
   - block:
       - name: create keystore.jks
-        command: "keytool -genkeypair -keystore /tmp/keystore.jks -storepass 'password' -keypass 'password' -dname 'CN=kirk,OU=client,O=client,L=test, C=de'"
+        command: "keytool -genkeypair -keystore /tmp/keystore.jks -storepass 'password' -keypass 'password' -dname 'CN=kirk,OU=client,O=client,L=test, C=de' -validity 3650"
         args:
           creates: /etc/elasticsearch/keystore.jks
 
