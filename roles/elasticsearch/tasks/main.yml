@@ -42,6 +42,31 @@
     retries: 3
     delay: 5
 
+  - block:
+      - name: create keystore.jks
+        command: "keytool -genkeypair -keystore /tmp/keystore.jks -storepass 'password' -keypass 'password' -dname 'CN=kirk,OU=client,O=client,L=test, C=de'"
+        args:
+          creates: /etc/elasticsearch/keystore.jks
+
+      - name: keystore check
+        shell: "cat /tmp/keystore.jks|base64 -w0"
+        args:
+          creates: /etc/elasticsearch/keystore.jks
+        register: elasticsearch_keystore
+        changed_when: false
+
+      - name: delete temporary keystore.jks
+        file:
+          path: /tmp/keystore.jks
+          state: absent
+
+    run_once: true
+
+  - name: keystore deploy
+    shell: "echo {{ elasticsearch_keystore.stdout|default() }}|base64 -d > /etc/elasticsearch/keystore.jks"
+    args:
+      creates: /etc/elasticsearch/keystore.jks
+
   when: search_guard_enabled
 
 - block:
