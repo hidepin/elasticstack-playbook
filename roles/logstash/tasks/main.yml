@@ -7,7 +7,7 @@
 - name: logstash install
   package:
     name: logstash
-    state: latest
+    state: present
   register: result
   until: result | success
   retries: 3

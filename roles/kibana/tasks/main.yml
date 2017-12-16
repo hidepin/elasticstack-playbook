@@ -7,7 +7,7 @@
 - name: kibana install
   package:
     name: kibana
-    state: latest
+    state: present
   register: result
   until: result | success
   retries: 3

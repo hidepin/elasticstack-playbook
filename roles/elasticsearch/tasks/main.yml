@@ -7,7 +7,7 @@
 - name: elasticsearch install
   package:
     name: elasticsearch
-    state: latest
+    state: present
   register: result
   until: result | success
   retries: 3

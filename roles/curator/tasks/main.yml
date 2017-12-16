@@ -22,7 +22,7 @@
 - name: curator install
   package:
     name: elasticsearch-curator
-    state: latest
+    state: present
   register: result
   until: result | success
   retries: 3
