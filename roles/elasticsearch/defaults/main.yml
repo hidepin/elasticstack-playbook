@@ -1,5 +1,6 @@
 ---
 # defaults file for elasticsearch
+elasticsearch_version: ''
 elasticsearch_plugins:
   - { plugin: 'x-pack', creates: '/usr/share/elasticsearch/plugins/x-pack/plugin-descriptor.properties' }
   - { plugin: 'analysis-icu', creates: '/usr/share/elasticsearch/plugins/analysis-icu/plugin-descriptor.properties' }

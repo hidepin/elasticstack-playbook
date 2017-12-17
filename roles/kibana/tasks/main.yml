@@ -6,8 +6,8 @@
 
 - name: kibana install
   package:
-    name: kibana
-    state: latest
+    name: "{{ (kibana_version == '') | ternary('kibana',['kibana', kibana_version]|join('-')) }}"
+    state: present
   register: result
   until: result | success
   retries: 3

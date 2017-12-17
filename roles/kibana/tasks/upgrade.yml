@@ -10,3 +10,8 @@
   shell: |
     /usr/share/kibana/bin/kibana-plugin remove {{ item.plugin }}
   with_items: "{{ kibana_plugins }}"
+
+- name: kibana remove
+  package:
+    name: kibana
+    state: absent

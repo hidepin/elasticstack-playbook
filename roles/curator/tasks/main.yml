@@ -19,10 +19,14 @@
     loop_control:
       loop_var: backup_item
 
+- name: upgrade curator
+  include: upgrade.yml
+  when: "{{ upgrade|default('false') }}"
+
 - name: curator install
   package:
-    name: elasticsearch-curator
-    state: latest
+    name: "{{ (curator_version == '') | ternary('elasticsearch-curator',['elasticsearch-curator', curator_version]|join('-')) }}"
+    state: present
   register: result
   until: result | success
   retries: 3
