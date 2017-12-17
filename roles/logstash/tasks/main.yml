@@ -6,7 +6,7 @@
 
 - name: logstash install
   package:
-    name: logstash
+    name: "{{ (logstash_version == '') | ternary('logstash',['logstash', logstash_version]|join('-')) }}"
     state: present
   register: result
   until: result | success

@@ -10,3 +10,8 @@
     path: "{{ item.plugin }}"
     state: absent
   with_items: "{{ logstash_plugins }}"
+
+- name: logstash remove
+  package:
+    name: logstash
+    state: absent

@@ -1,0 +1,6 @@
+---
+# file: roles/curator/tasks/upgrade.yml
+- name: curator remove
+  package:
+    name: elasticsearch-curator
+    state: absent

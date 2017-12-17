@@ -6,7 +6,7 @@
 
 - name: elasticsearch install
   package:
-    name: elasticsearch
+    name: "{{ (elasticsearch_version == '') | ternary('elasticsearch',['elasticsearch', elasticsearch_version]|join('-')) }}"
     state: present
   register: result
   until: result | success
