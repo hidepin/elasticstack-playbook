@@ -63,7 +63,7 @@
 
   always:
   - name: common backup settings
-    include: backup.yml
+    include_tasks: backup.yml
     with_flattened:
       - "{{ is_yum_proxy_setting|default() }}"
     loop_control:

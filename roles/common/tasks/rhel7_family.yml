@@ -231,7 +231,7 @@
 
   always:
   - name: (rhel7 family) backup settings
-    include: backup.yml
+    include_tasks: backup.yml
     with_flattened:
       - "{{ is_chrony_conf_setting|default() }}"
       - "{{ is_journald_setting|default() }}"
@@ -246,5 +246,5 @@
       loop_var: backup_item
 
 - name: reboot after kdump setting
-  include: reboot.yml
+  import_tasks: reboot.yml
   when: runlevel.stdout != "multi-user.target" or is_grub_setting|changed
