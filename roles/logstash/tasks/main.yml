@@ -2,7 +2,7 @@
 # file: roles/logstash/tasks/main.yml
 - name: upgrade logstash
   import_tasks: upgrade.yml
-  when: "{{ upgrade|default('false') }}"
+  when: upgrade is defined
 
 - name: logstash install
   package:

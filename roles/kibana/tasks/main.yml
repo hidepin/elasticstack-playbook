@@ -2,7 +2,7 @@
 # file: roles/kibana/tasks/main.yml
 - name: upgrade kibana
   import_tasks: upgrade.yml
-  when: "{{ upgrade|default('false') }}"
+  when: upgrade is defined
 
 - name: kibana install
   package:

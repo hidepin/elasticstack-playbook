@@ -21,7 +21,7 @@
 
 - name: upgrade curator
   import_tasks: upgrade.yml
-  when: "{{ upgrade|default('false') }}"
+  when: upgrade is defined
 
 - name: curator install
   package:

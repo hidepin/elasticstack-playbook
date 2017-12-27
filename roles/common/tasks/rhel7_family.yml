@@ -221,7 +221,7 @@
 
   - name: (rhel7 family) set active tuned profile
     shell: tuned-adm profile "{{ tuned_profile }}"
-    when: active_tuned_profile.stdout != "{{ tuned_profile }}"
+    when: active_tuned_profile.stdout != tuned_profile
 
   - name: (rhel7 family) tuned restart
     service:
