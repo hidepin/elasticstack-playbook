@@ -1,8 +1,8 @@
 ---
 # file: roles/kibana/tasks/main.yml
 - name: upgrade kibana
-  include: upgrade.yml
-  when: "{{ upgrade|default('false') }}"
+  import_tasks: upgrade.yml
+  when: upgrade is defined
 
 - name: kibana install
   package:
@@ -39,7 +39,7 @@
 
   always:
   - name: elk-common backup settings
-    include: backup.yml
+    include_tasks: backup.yml
     with_flattened:
       - "{{ is_kibana_setting|default() }}"
     loop_control:

@@ -1,8 +1,8 @@
 ---
 # file: roles/elasticsearch/tasks/main.yml
 - name: upgrade elasticsearch
-  include: upgrade.yml
-  when: "{{ upgrade|default('false') }}"
+  import_tasks: upgrade.yml
+  when: upgrade is defined
 
 - name: elasticsearch install
   package:
@@ -69,7 +69,7 @@
 
   always:
   - name: elk-common backup settings
-    include: backup.yml
+    include_tasks: backup.yml
     with_flattened:
       - "{{ is_elasticsearch_systemd_setting|default() }}"
       - "{{ is_elasticsearch_setting|default() }}"
