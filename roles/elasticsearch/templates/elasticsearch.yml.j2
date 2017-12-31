@@ -7,8 +7,8 @@
 # The primary way of configuring a node is via this file. This template lists
 # the most important settings you may want to configure for a production cluster.
 #
-# Please see the documentation for further information on configuration options:
-# <https://www.elastic.co/guide/en/elasticsearch/reference/5.0/settings.html>
+# Please consult the documentation for further information on configuration options:
+# https://www.elastic.co/guide/en/elasticsearch/reference/index.html
 #
 # ---------------------------------- Cluster -----------------------------------
 #
@@ -32,11 +32,11 @@ node.name: ${HOSTNAME}
 #
 # Path to directory where to store the data (separate multiple locations by comma):
 #
-#path.data: /path/to/data
+path.data: /var/lib/elasticsearch
 #
 # Path to log files:
 #
-#path.logs: /path/to/logs
+path.logs: /var/log/elasticsearch
 #
 # ----------------------------------- Memory -----------------------------------
 #
@@ -62,8 +62,7 @@ network.host: _local_, _site_
 #
 #http.port: 9200
 #
-# For more information, see the documentation at:
-# <https://www.elastic.co/guide/en/elasticsearch/reference/5.0/modules-network.html>
+# For more information, consult the network module documentation.
 #
 # --------------------------------- Discovery ----------------------------------
 #
@@ -75,17 +74,16 @@ network.host: _local_, _site_
 discovery.zen.ping.unicast.hosts: [{{ groups["elasticsearch_nodes"]|join(',') }}]
 {% endif %}
 #
-# Prevent the "split brain" by configuring the majority of nodes (total number of nodes / 2 + 1):
+# Prevent the "split brain" by configuring the majority of nodes (total number of master-eligible nodes / 2 + 1):
 #
-#discovery.zen.minimum_master_nodes: 3
+#discovery.zen.minimum_master_nodes: 
 {% if 'aio_standalone' in group_names %}
 discovery.zen.minimum_master_nodes: 1
 {% else %}
 discovery.zen.minimum_master_nodes: {{ groups["elasticsearch_nodes"]|count() // 2 + 1 }}
 {% endif %}
 #
-# For more information, see the documentation at:
-# <https://www.elastic.co/guide/en/elasticsearch/reference/5.0/modules-discovery-zen.html>
+# For more information, consult the zen discovery module documentation.
 #
 # ---------------------------------- Gateway -----------------------------------
 #
@@ -93,8 +91,7 @@ discovery.zen.minimum_master_nodes: {{ groups["elasticsearch_nodes"]|count() // 
 #
 #gateway.recover_after_nodes: 3
 #
-# For more information, see the documentation at:
-# <https://www.elastic.co/guide/en/elasticsearch/reference/5.0/modules-gateway.html>
+# For more information, consult the gateway module documentation.
 #
 # ---------------------------------- Various -----------------------------------
 #
