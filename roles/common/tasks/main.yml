@@ -1,7 +1,7 @@
 ---
 # file: roles/common/tasks/main.yml
 - name: register subscription and yum proxy setting
-  include: yum_setup.yml
+  import_tasks: yum_setup.yml
 
 - name: packages install for ansible
   package:
@@ -57,7 +57,7 @@
 
   always:
   - name: common backup settings
-    include: backup.yml
+    include_tasks: backup.yml
     with_flattened:
       - "{{ is_selinux_setting|default() }}"
       - "{{ is_hosts_setting.results|default() }}"
@@ -66,15 +66,15 @@
       loop_var: backup_item
 
 - name: RHEL6 family only setting
-  include: rhel6_family.yml
+  import_tasks: rhel6_family.yml
   when: ansible_distribution_major_version == '6'
 
 - name: RHEL7 family only setting
-  include: rhel7_family.yml
+  import_tasks: rhel7_family.yml
   when: ansible_distribution_major_version != '6'
 
 - name: kernel update
-  include: kernel_update.yml
+  import_tasks: kernel_update.yml
   when: kernel_update
 
 - name: update package
@@ -105,5 +105,5 @@
   when: common_user is defined and common_user != None
 
 - name: reboot after change selinux
-  include: reboot.yml
+  import_tasks: reboot.yml
   when: ansible_selinux.status is undefined or ansible_selinux.status != "disabled"

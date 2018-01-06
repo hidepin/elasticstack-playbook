@@ -13,15 +13,15 @@
 
   always:
   - name: curator backup settings
-    include: backup.yml
+    include_tasks: backup.yml
     with_flattened:
       - "{{ is_curator_repo_setting|default() }}"
     loop_control:
       loop_var: backup_item
 
 - name: upgrade curator
-  include: upgrade.yml
-  when: "{{ upgrade|default('false') }}"
+  import_tasks: upgrade.yml
+  when: upgrade is defined
 
 - name: curator install
   package:

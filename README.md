@@ -36,12 +36,12 @@ aio_standaloneに指定したノードは、それぞれのノードが1つの�
 # 設定
 
 - es_cluster_name           # Elasticsearchのクラスタ名を指定する(aio_standaloneの場合はクラスタ名にホスト名が加えられる)
-- xpack_security_enabled    # xpackのsecurity機能の有効無効を設定する(サブスクリプションがない場合1ヶ月しか使用できない)
-- xpack_monitoring_enabled  # xpackのmonitor機能の有効無効を設定する(サブスクリプションがない場合1ヶ月しか使用できない)
 - xpack_graph_enabled       # xpackのgraph機能の有効無効を設定する(サブスクリプションがない場合1ヶ月しか使用できない)
-- xpack_watcher_enabled     # xpackのwatcher機能の有効無効を設定する(サブスクリプションがない場合1ヶ月しか使用できない)
-- xpack_reporting_enabled   # xpackのreporting機能の有効無効を設定する(サブスクリプションがない場合1ヶ月しか使用できない)
 - xpack_ml_enabled          # xpackのmachine learning機能の有効無効を設定する(サブスクリプションがない場合1ヶ月しか使用できない)
+- xpack_monitoring_enabled  # xpackのmonitor機能の有効無効を設定する(サブスクリプションがない場合1ヶ月しか使用できない)
+- xpack_reporting_enabled   # xpackのreporting機能の有効無効を設定する(サブスクリプションがない場合1ヶ月しか使用できない)
+- xpack_security_enabled    # xpackのsecurity機能の有効無効を設定する(サブスクリプションがない場合1ヶ月しか使用できない)
+- xpack_watcher_enabled     # xpackのwatcher機能の有効無効を設定する(サブスクリプションがない場合1ヶ月しか使用できない)
 
 # 実行方法
 

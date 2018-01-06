@@ -1,8 +1,8 @@
 ---
 # file: roles/kibana/tasks/main.yml
 - name: upgrade kibana
-  include: upgrade.yml
-  when: "{{ upgrade|default('false') }}"
+  import_tasks: upgrade.yml
+  when: upgrade is defined
 
 - name: kibana install
   package:
@@ -15,9 +15,12 @@
 
 - name: kibana plugin install
   shell: |
-    sudo -u kibana /usr/share/kibana/bin/kibana-plugin install {{ item.plugin }}
+    /usr/share/kibana/bin/kibana-plugin install {{ item.plugin }}
   args:
     creates: "{{ item.creates }}"
+  become: true
+  become_user: kibana
+  become_method: sudo
   notify: kibana restart
   with_items: "{{ kibana_plugins }}"
   register: result
@@ -39,7 +42,7 @@
 
   always:
   - name: elk-common backup settings
-    include: backup.yml
+    include_tasks: backup.yml
     with_flattened:
       - "{{ is_kibana_setting|default() }}"
     loop_control:
