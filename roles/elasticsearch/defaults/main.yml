@@ -9,7 +9,7 @@ elasticsearch_plugins:
   - { plugin: 'ingest-user-agent', creates: '/usr/share/elasticsearch/plugins/ingest-user-agent/plugin-descriptor.properties' }
 es_cluster_name: 'escluster'
 search_guard_enabled: False
-search_guard_version: "16"
+search_guard_version: "18"
 xpack_graph_enabled: False
 xpack_ml_enabled: False
 xpack_monitoring_enabled: True
