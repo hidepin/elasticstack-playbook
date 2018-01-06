@@ -2,4 +2,4 @@
 # defaults file for logstash
 logstash_version: ''
 logstash_plugins:
-  - { plugin: 'logstash-filter-translate', creates: '/usr/share/logstash/vendor/bundle/jruby/1.9/gems/logstash-filter-translate-3.0.4' }
+  - { plugin: 'logstash-filter-translate', creates: '/usr/share/logstash/vendor/bundle/jruby/2.3.0/gems/logstash-filter-translate-3.0.4' }
