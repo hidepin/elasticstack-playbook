@@ -8,9 +8,9 @@ elasticsearch_plugins:
   - { plugin: 'ingest-geoip', creates: '/usr/share/elasticsearch/plugins/ingest-geoip/plugin-descriptor.properties' }
   - { plugin: 'ingest-user-agent', creates: '/usr/share/elasticsearch/plugins/ingest-user-agent/plugin-descriptor.properties' }
 es_cluster_name: 'escluster'
-xpack_security_enabled: False
-xpack_monitoring_enabled: True
 xpack_graph_enabled: False
-xpack_watcher_enabled: False
-xpack_reporting_enabled: False
 xpack_ml_enabled: False
+xpack_monitoring_enabled: True
+xpack_reporting_enabled: False
+xpack_security_enabled: False
+xpack_watcher_enabled: False
