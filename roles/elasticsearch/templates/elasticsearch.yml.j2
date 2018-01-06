@@ -99,18 +99,15 @@ discovery.zen.minimum_master_nodes: {{ groups["elasticsearch_nodes"]|count() // 
 #
 #action.destructive_requires_name: true
 
-{% if not xpack_security_enabled %}
-xpack.security.enabled: false
+{% if not xpack_ml_enabled %}
+xpack.ml.enabled: false
 {% endif %}
 {% if not xpack_monitoring_enabled %}
 xpack.monitoring.enabled: false
 {% endif %}
-{% if not xpack_graph_enabled %}
-xpack.graph.enabled: false
+{% if not xpack_security_enabled %}
+xpack.security.enabled: false
 {% endif %}
 {% if not xpack_watcher_enabled %}
 xpack.watcher.enabled: false
-{% endif %}
-{% if not xpack_ml_enabled %}
-xpack.ml.enabled: false
 {% endif %}
