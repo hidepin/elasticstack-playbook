@@ -114,7 +114,7 @@ xpack.security.enabled: false
 {% if not xpack_watcher_enabled %}
 xpack.watcher.enabled: false
 {% endif %}
-{% if search_guard_enabled %}
+{% if searchguard_enabled %}
 searchguard.disabled: true
 searchguard.ssl.transport.keystore_filepath: keystore.jks
 searchguard.ssl.transport.truststore_filepath: truststore.jks

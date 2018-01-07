@@ -27,7 +27,7 @@
 
 - name: setup search-guard
   include_tasks: search-guard.yml
-  when: search_guard_enabled
+  when: searchguard_enabled
 
 - block:
   - name: create elasticsearch systemd dir

@@ -7,7 +7,7 @@
 
 - name: elasticsearch search guard plugin install
   shell: |
-    /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch com.floragunn:search-guard-{{ elasticsearch_version.stdout|regex_replace('\..*', '') }}:{{ elasticsearch_version.stdout }}-{{ search_guard_version }}
+    /usr/share/elasticsearch/bin/elasticsearch-plugin install --batch com.floragunn:search-guard-{{ elasticsearch_version.stdout|regex_replace('\..*', '') }}:{{ elasticsearch_version.stdout }}-{{ searchguard_version }}
   args:
     creates: "/usr/share/elasticsearch/plugins/search-guard-{{ elasticsearch_version.stdout|regex_replace('\\..*', '') }}"
   notify: elasticsearch restart
