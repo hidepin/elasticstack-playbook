@@ -1,5 +1,5 @@
 ---
-# file: roles/elasticsearch/tasks/search-guard.yml
+# file: roles/elasticsearch/tasks/searchguard.yml
 - name: elasticsearch version check
   shell: basename /usr/share/elasticsearch/lib/elasticsearch* | sed 's/.*-\(.*\).jar/\1/'
   register: elasticsearch_version

@@ -25,7 +25,7 @@
   retries: 3
   delay: 5
 
-- name: setup search-guard
+- name: setup searchguard
   include_tasks: searchguard.yml
   when: searchguard_enabled
 
