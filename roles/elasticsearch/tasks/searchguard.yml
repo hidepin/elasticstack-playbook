@@ -17,6 +17,15 @@
   delay: 5
 
 - block:
+    - name: openssl install
+      package:
+        name: openssl
+        state: present
+      register: result
+      until: result | success
+      retries: 3
+      delay: 5
+
     - name: create keystore.jks
       command: "keytool -genkeypair -keystore /tmp/keystore.jks -storepass 'password' -keypass 'password' -dname 'CN=kirk,OU=client,O=client,L=test, C=de' -validity 3650"
       args:
