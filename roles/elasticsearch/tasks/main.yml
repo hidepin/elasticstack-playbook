@@ -26,7 +26,7 @@
   delay: 5
 
 - name: setup search-guard
-  include: search-guard.yml
+  include_tasks: search-guard.yml
   when: search_guard_enabled
 
 - block:
