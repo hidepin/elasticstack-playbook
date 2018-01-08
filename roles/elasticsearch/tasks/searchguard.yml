@@ -45,54 +45,60 @@
         - { path: "{{ searchguard_workdir }}/searchguard-ca/private", owner: 'root', group: 'root', mode: '0700' }
 
     - name: create searchguard ca index file
-      command: "touch {{ searchguard_workdir }}/searchguard-ca/db/index"
+      command: "touch {{ searchguard_workdir }}/searchguard-ca/db/{{ item.name }}.index"
       args:
-        creates: "{{ searchguard_workdir }}/searchguard-ca/db/index"
+        creates: "{{ searchguard_workdir }}/searchguard-ca/db/{{ item.name }}.index"
+      with_items: "{{ searchguard_openssl_cnf }}"
 
     - name: create searchguard ca serial file
-      shell: "openssl rand -hex 16 > {{ searchguard_workdir }}/searchguard-ca/db/serial"
+      shell: "openssl rand -hex 16 > {{ searchguard_workdir }}/searchguard-ca/db/{{ item.name }}.serial"
       args:
         creates: "{{ searchguard_workdir }}/searchguard-ca/db/serial"
+      with_items: "{{ searchguard_openssl_cnf }}"
 
     - name: searchguard ca config setting
       template:
         src: root-ca.cnf.j2
-        dest: "{{ searchguard_workdir }}/searchguard-ca/root-ca.cnf"
+        dest: "{{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.cnf"
         owner: root
         group: root
         mode: 0660
+      with_items: "{{ searchguard_openssl_cnf }}"
 
     - name: create searchguard ca private key and csr
       command: >
         openssl req -new
-        -config {{ searchguard_workdir }}/searchguard-ca/root-ca.cnf
-        -out {{ searchguard_workdir }}/searchguard-ca/root-ca.csr
-        -keyout {{ searchguard_workdir }}/searchguard-ca/private/root-ca.key
+        -config {{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.cnf
+        -out {{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.csr
+        -keyout {{ searchguard_workdir }}/searchguard-ca/private/{{ item.name }}.key
         -batch
         -passout pass:password
       args:
-        creates: "{{ searchguard_workdir }}/searchguard-ca/private/root-ca.key"
+        creates: "{{ searchguard_workdir }}/searchguard-ca/private/{{ item.name }}.key"
+      with_items: "{{ searchguard_openssl_cnf }}"
 
     - name: create searchguard ca crt
       command: >
-        openssl ca -selfsign
+        openssl ca{% if item.root %} -selfsign{% endif %}
         -config {{ searchguard_workdir }}/searchguard-ca/root-ca.cnf
-        -in {{ searchguard_workdir }}/searchguard-ca/root-ca.csr
-        -out {{ searchguard_workdir }}/searchguard-ca/root-ca.crt
-        -extensions root_ca_ext
+        -in {{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.csr
+        -out {{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.crt
+        -extensions {{ item.name|replace('-', '_') }}_ext
         -batch
         -passin pass:password
       args:
-        creates: "{{ searchguard_workdir }}/searchguard-ca/root-ca.crt"
+        creates: "{{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.crt"
+      with_items: "{{ searchguard_openssl_cnf }}"
 
     - name: create ca crt pem
       command: >
         openssl x509
-        -in {{ searchguard_workdir }}/searchguard-ca/root-ca.crt
-        -out {{ searchguard_workdir }}/searchguard-ca/root-ca.pem
+        -in {{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.crt
+        -out {{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.pem
         -outform PEM
       args:
-        creates: "{{ searchguard_workdir }}/searchguard-ca/root-ca.pem"
+        creates: "{{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.pem"
+      with_items: "{{ searchguard_openssl_cnf }}"
 
     - name: create truststore.jks
       command: >

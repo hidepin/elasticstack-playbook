@@ -11,6 +11,29 @@ es_cluster_name: 'escluster'
 searchguard_enabled: False
 searchguard_version: "18"
 searchguard_workdir: "/tmp"
+searchguard_openssl_cnf:
+  - name: root-ca
+    root: True
+    ca_dn:
+      - { name: 'countryName', value: 'JP' }
+      - { name: 'organizationName', value: 'Local' }
+      - { name: 'commonName', value: 'Root CA' }
+    ca_ext:
+      - { name: 'basicConstraints', value: 'critical,CA:true' }
+      - { name: 'keyUsage', value: 'critical,keyCertSign,cRLSign' }
+      - { name: 'subjectKeyIdentifier', value: 'hash' }
+    x509_extensions: signing_ca_ext
+  - name: signing-ca
+    root: False
+    ca_dn:
+      - { name: 'countryName', value: 'JP' }
+      - { name: 'organizationName', value: 'Local' }
+      - { name: 'commonName', value: 'Signing CA' }
+    ca_ext:
+      - { name: 'basicConstraints', value: 'critical,CA:true,pathlen:0' }
+      - { name: 'keyUsage', value: 'critical,keyCertSign,cRLSign' }
+      - { name: 'subjectKeyIdentifier', value: 'hash' }
+    x509_extensions: client_ext
 xpack_graph_enabled: False
 xpack_ml_enabled: False
 xpack_monitoring_enabled: True

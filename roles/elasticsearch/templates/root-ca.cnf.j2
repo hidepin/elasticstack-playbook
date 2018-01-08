@@ -1,5 +1,6 @@
 ####################################################################
 [ default ]
+ca                      = {{ item.name }}
 dir                     = /tmp/searchguard-ca
 
 ####################################################################
@@ -15,35 +16,34 @@ req_extensions          = ca_ext
 
 ####################################################################
 [ ca_dn ]
-countryName             = "JP"
-organizationName        = "Local"
-commonName              = "Root CA"
+{% for ca_dn in item.ca_dn %}
+{{ ca_dn.name }} = "{{ ca_dn.value }}"
+{% endfor %}
 
 ####################################################################
 [ ca_ext ]
-basicConstraints        = critical,CA:true
-keyUsage                = critical,keyCertSign,cRLSign
-subjectKeyIdentifier    = hash
+{% for ca_ext in item.ca_ext %}
+{{ ca_ext.name }} = {{ ca_ext.value }}
+{% endfor %}
 
 #######################################################################
 [ ca ]
-default_ca              = root_ca
+default_ca              = {{ item.name|replace('-', '_') }}
 
 #######################################################################
-[ root_ca ]
-ca                      = root-ca
-database                = $dir/db/index
-serial                  = $dir/db/serial
+[ {{ item.name|replace('-', '_') }} ]
+database                = $dir/db/$ca.index
+serial                  = $dir/db/$ca.serial
 certificate             = $dir/$ca.crt
 private_key             = $dir/private/$ca.key
-new_certs_dir           = $dir/certs
+new_certs_dir           = $dir/certs/
 RANDFILE                = $dir/private/random
 unique_subject          = no
-copy_extensions         = none
+copy_extensions         = copy
 default_days            = 3650
 default_md              = sha256
 policy                  = policy_match
-x509_extensions         = signing_ca_ext
+x509_extensions         = {{ item.x509_extensions }}
 
 #######################################################################
 [ policy_match ]
@@ -65,5 +65,21 @@ authorityKeyIdentifier  = keyid:always
 [ signing_ca_ext ]
 basicConstraints        = critical,CA:true,pathlen:0
 keyUsage                = critical,keyCertSign,cRLSign
+subjectKeyIdentifier    = hash
+authorityKeyIdentifier  = keyid:always
+
+#######################################################################
+[ client_ext ]
+keyUsage                = critical,digitalSignature,keyEncipherment
+basicConstraints        = CA:false
+extendedKeyUsage        = clientAuth
+subjectKeyIdentifier    = hash
+authorityKeyIdentifier  = keyid:always
+
+#######################################################################
+[ server_ext ]
+keyUsage                = critical,digitalSignature,keyEncipherment
+basicConstraints        = CA:false
+extendedKeyUsage        = serverAuth,clientAuth
 subjectKeyIdentifier    = hash
 authorityKeyIdentifier  = keyid:always
