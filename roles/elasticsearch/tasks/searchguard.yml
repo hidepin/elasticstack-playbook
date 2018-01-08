@@ -16,6 +16,11 @@
   retries: 3
   delay: 5
 
+- name: check truststore.jks
+  stat:
+    path: /etc/elasticsearch/truststore.jks
+  register: truststore_stat
+
 - block:
     - name: openssl install
       package:
@@ -34,31 +39,90 @@
         mode: "{{ item.mode}}"
         state: directory
       with_items:
-        - { path: '/tmp/searchguard-ca', owner: 'root', group: 'root', mode: '0700' }
-        - { path: '/tmp/searchguard-ca/certs', owner: 'root', group: 'root', mode: '0700' }
-        - { path: '/tmp/searchguard-ca/db', owner: 'root', group: 'root', mode: '0700' }
-        - { path: '/tmp/searchguard-ca/private', owner: 'root', group: 'root', mode: '0700' }
+        - { path: "{{ searchguard_workdir }}/searchguard-ca", owner: 'root', group: 'root', mode: '0700' }
+        - { path: "{{ searchguard_workdir }}/searchguard-ca/certs", owner: 'root', group: 'root', mode: '0700' }
+        - { path: "{{ searchguard_workdir }}/searchguard-ca/db", owner: 'root', group: 'root', mode: '0700' }
+        - { path: "{{ searchguard_workdir }}/searchguard-ca/private", owner: 'root', group: 'root', mode: '0700' }
 
     - name: create searchguard ca index file
-      file:
-        path: '/tmp/searchguard-ca/db/index'
-        owner: 'root'
-        group: 'root'
-        mode: '0600'
-        state: directory
+      command: "touch {{ searchguard_workdir }}/searchguard-ca/db/index"
+      args:
+        creates: "{{ searchguard_workdir }}/searchguard-ca/db/index"
 
     - name: create searchguard ca serial file
-      shell: "openssl rand -hex 16 > /tmp/searchguard-ca/db/serial"
+      shell: "openssl rand -hex 16 > {{ searchguard_workdir }}/searchguard-ca/db/serial"
       args:
-        creates: /tmp/searchguard-ca/db/serial
+        creates: "{{ searchguard_workdir }}/searchguard-ca/db/serial"
+
+    - name: searchguard ca config setting
+      template:
+        src: root-ca.cnf.j2
+        dest: "{{ searchguard_workdir }}/searchguard-ca/root-ca.cnf"
+        owner: root
+        group: root
+        mode: 0660
+
+    - name: create searchguard ca private key and csr
+      command: >
+        openssl req -new
+        -config {{ searchguard_workdir }}/searchguard-ca/root-ca.cnf
+        -out {{ searchguard_workdir }}/searchguard-ca/root-ca.csr
+        -keyout {{ searchguard_workdir }}/searchguard-ca/private/root-ca.key
+        -batch
+        -passout pass:password
+      args:
+        creates: "{{ searchguard_workdir }}/searchguard-ca/private/root-ca.key"
+
+    - name: create searchguard ca crt
+      command: >
+        openssl ca -selfsign
+        -config {{ searchguard_workdir }}/searchguard-ca/root-ca.cnf
+        -in {{ searchguard_workdir }}/searchguard-ca/root-ca.csr
+        -out {{ searchguard_workdir }}/searchguard-ca/root-ca.crt
+        -extensions root_ca_ext
+        -batch
+        -passin pass:password
+      args:
+        creates: "{{ searchguard_workdir }}/searchguard-ca/root-ca.crt"
+
+    - name: create ca crt pem
+      command: >
+        openssl x509
+        -in {{ searchguard_workdir }}/searchguard-ca/root-ca.crt
+        -out {{ searchguard_workdir }}/searchguard-ca/root-ca.pem
+        -outform PEM
+      args:
+        creates: "{{ searchguard_workdir }}/searchguard-ca/root-ca.pem"
+
+    - name: create truststore.jks
+      command: >
+        keytool -import
+        -keystore {{ searchguard_workdir }}/searchguard-ca/truststore.jks
+        -storepass password
+        -noprompt
+        -alias root-ca-chain
+        -file {{ searchguard_workdir }}/searchguard-ca/root-ca.pem
+      args:
+        creates: "{{ searchguard_workdir }}/searchguard-ca/truststore.jks"
+
+    - name: truststore check
+      shell: "cat {{ searchguard_workdir }}/searchguard-ca/truststore.jks|base64 -w0"
+      args:
+        creates: /etc/elasticsearch/truststore.jks
+      register: elasticsearch_truststore
+
+    - name: delete searchguard ca dir
+      file:
+        path: "{{ searchguard_workdir }}/searchguard-ca"
+        state: absent
 
     - name: create keystore.jks
-      command: "keytool -genkeypair -keystore /tmp/keystore.jks -storepass 'password' -keypass 'password' -dname 'CN=kirk,OU=client,O=client,L=test, C=de' -validity 3650"
+      command: "keytool -genkeypair -keystore {{ searchguard_workdir }}/keystore.jks -storepass 'password' -keypass 'password' -dname 'CN=kirk,OU=client,O=client,L=test, C=de' -validity 3650"
       args:
         creates: /etc/elasticsearch/keystore.jks
 
     - name: keystore check
-      shell: "cat /tmp/keystore.jks|base64 -w0"
+      shell: "cat {{ searchguard_workdir }}/keystore.jks|base64 -w0"
       args:
         creates: /etc/elasticsearch/keystore.jks
       register: elasticsearch_keystore
@@ -66,10 +130,16 @@
 
     - name: delete temporary keystore.jks
       file:
-        path: /tmp/keystore.jks
+        path: "{{ searchguard_workdir }}/keystore.jks"
         state: absent
 
   run_once: true
+  when: not truststore_stat.stat.exists
+
+- name: truststore deploy
+  shell: "echo {{ elasticsearch_truststore.stdout|default() }}|base64 -d > /etc/elasticsearch/truststore.jks"
+  args:
+    creates: /etc/elasticsearch/truststore.jks
 
 - name: keystore deploy
   shell: "echo {{ elasticsearch_keystore.stdout|default() }}|base64 -d > /etc/elasticsearch/keystore.jks"

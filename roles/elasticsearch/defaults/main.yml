@@ -10,6 +10,7 @@ elasticsearch_plugins:
 es_cluster_name: 'escluster'
 searchguard_enabled: False
 searchguard_version: "18"
+searchguard_workdir: "/tmp"
 xpack_graph_enabled: False
 xpack_ml_enabled: False
 xpack_monitoring_enabled: True

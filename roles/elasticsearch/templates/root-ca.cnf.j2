@@ -1,0 +1,69 @@
+####################################################################
+[ default ]
+dir                     = /tmp/searchguard-ca
+
+####################################################################
+[ req ]
+default_bits            = 2048
+encrypt_key             = yes
+default_md              = sha256
+utf8                    = yes
+string_mask             = utf8only
+prompt                  = no
+distinguished_name      = ca_dn
+req_extensions          = ca_ext
+
+####################################################################
+[ ca_dn ]
+countryName             = "JP"
+organizationName        = "Local"
+commonName              = "Root CA"
+
+####################################################################
+[ ca_ext ]
+basicConstraints        = critical,CA:true
+keyUsage                = critical,keyCertSign,cRLSign
+subjectKeyIdentifier    = hash
+
+#######################################################################
+[ ca ]
+default_ca              = root_ca
+
+#######################################################################
+[ root_ca ]
+ca                      = root-ca
+database                = $dir/db/index
+serial                  = $dir/db/serial
+certificate             = $dir/$ca.crt
+private_key             = $dir/private/$ca.key
+new_certs_dir           = $dir/certs
+RANDFILE                = $dir/private/random
+unique_subject          = no
+copy_extensions         = none
+default_days            = 3650
+default_md              = sha256
+policy                  = policy_match
+x509_extensions         = signing_ca_ext
+
+#######################################################################
+[ policy_match ]
+countryName             = optional
+stateOrProvinceName     = optional
+organizationName        = optional
+organizationalUnitName  = optional
+commonName              = optional
+emailAddress            = optional
+
+#######################################################################
+[ root_ca_ext ]
+basicConstraints        = critical,CA:true
+keyUsage                = critical,keyCertSign,cRLSign
+subjectKeyIdentifier    = hash
+authorityKeyIdentifier  = keyid:always
+
+#######################################################################
+[ signing_ca_ext ]
+basicConstraints        = critical,CA:true,pathlen:0
+keyUsage                = critical,keyCertSign,cRLSign
+subjectKeyIdentifier    = hash
+authorityKeyIdentifier  = keyid:always
