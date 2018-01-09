@@ -128,32 +128,34 @@
         path: "{{ searchguard_workdir }}/searchguard-ca"
         state: absent
 
-    - name: create keystore.jks
-      command: "keytool -genkeypair -keystore {{ searchguard_workdir }}/keystore.jks -storepass 'password' -keypass 'password' -dname 'CN=kirk,OU=client,O=client,L=test, C=de' -validity 3650"
-      args:
-        creates: /etc/elasticsearch/keystore.jks
-
-    - name: keystore check
-      shell: "cat {{ searchguard_workdir }}/keystore.jks|base64 -w0"
-      args:
-        creates: /etc/elasticsearch/keystore.jks
-      register: elasticsearch_keystore
-      changed_when: false
-
-    - name: delete temporary keystore.jks
-      file:
-        path: "{{ searchguard_workdir }}/keystore.jks"
-        state: absent
-
   run_once: true
   when: not truststore_stat.stat.exists
+
+- name: check keystore.jks
+  stat:
+    path: /etc/elasticsearch/keystore.jks
+  register: keystore_stat
+
+- block:
+    - name: create keystore.jks
+      command: >
+        keytool -genkeypair
+        -alias {{ ansible_hostname }}
+        -keystore /etc/elasticsearch/keystore.jks
+        -keyalg    RSA
+        -keysize   2048
+        -validity  3650
+        -sigalg SHA256withRSA
+        -keypass password
+        -storepass password
+        -dname "CN={{ ansible_nodename }},OU=client,O=client,C=JP"
+        -ext "san=dns:{{ ansible_nodename }},ip:{{ ansible_default_ipv4.address }},dns:localhost,ip:127.0.0.1,oid:1.2.3.4.5.5"
+      args:
+        creates: /etc/elasticsearch/keystore.jks
+
+  when: not keystore_stat.stat.exists
 
 - name: truststore deploy
   shell: "echo {{ elasticsearch_truststore.stdout|default() }}|base64 -d > /etc/elasticsearch/truststore.jks"
   args:
     creates: /etc/elasticsearch/truststore.jks
-
-- name: keystore deploy
-  shell: "echo {{ elasticsearch_keystore.stdout|default() }}|base64 -d > /etc/elasticsearch/keystore.jks"
-  args:
-    creates: /etc/elasticsearch/keystore.jks
