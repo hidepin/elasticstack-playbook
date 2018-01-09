@@ -58,7 +58,7 @@
 
     - name: searchguard ca config setting
       template:
-        src: root-ca.cnf.j2
+        src: ca.cnf.j2
         dest: "{{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.cnf"
         owner: root
         group: root
