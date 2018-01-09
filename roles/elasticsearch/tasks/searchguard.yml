@@ -117,6 +117,12 @@
         creates: /etc/elasticsearch/truststore.jks
       register: elasticsearch_truststore
 
+    - name: chain-ca pem store
+      shell: "cat {{ searchguard_workdir }}/searchguard-ca/signing-ca.pem {{ searchguard_workdir }}/searchguard-ca/signing-ca.pem|base64 -w0"
+      args:
+        creates: /etc/elasticsearch/keystore.jks
+      register: elasticsearch_chain_ca_pem
+
     - name: delete searchguard ca dir
       file:
         path: "{{ searchguard_workdir }}/searchguard-ca"
