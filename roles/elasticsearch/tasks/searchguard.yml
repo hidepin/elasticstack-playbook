@@ -16,6 +16,15 @@
   retries: 3
   delay: 5
 
+- name: searchguard ca config setting
+  template:
+    src: ca.cnf.j2
+    dest: "/etc/elasticsearch/{{ item.name }}.cnf"
+    owner: root
+    group: root
+    mode: 0660
+  with_items: "{{ searchguard_openssl_cnf }}"
+
 - name: check truststore.jks
   stat:
     path: /etc/elasticsearch/truststore.jks
@@ -56,19 +65,10 @@
         creates: "{{ searchguard_workdir }}/searchguard-ca/db/serial"
       with_items: "{{ searchguard_openssl_cnf }}"
 
-    - name: searchguard ca config setting
-      template:
-        src: ca.cnf.j2
-        dest: "{{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.cnf"
-        owner: root
-        group: root
-        mode: 0660
-      with_items: "{{ searchguard_openssl_cnf }}"
-
     - name: create searchguard ca private key and csr
       command: >
         openssl req -new
-        -config {{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.cnf
+        -config /etc/elasticsearch/{{ item.name }}.cnf
         -out {{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.csr
         -keyout {{ searchguard_workdir }}/searchguard-ca/private/{{ item.name }}.key
         -batch
@@ -80,7 +80,7 @@
     - name: create searchguard ca crt
       command: >
         openssl ca{% if item.root %} -selfsign{% endif %}
-        -config {{ searchguard_workdir }}/searchguard-ca/root-ca.cnf
+        -config /etc/elasticsearch/root-ca.cnf
         -in {{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.csr
         -out {{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.crt
         -extensions {{ item.name|replace('-', '_') }}_ext
