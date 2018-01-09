@@ -111,7 +111,7 @@
       args:
         creates: "{{ searchguard_workdir }}/searchguard-ca/truststore.jks"
 
-    - name: truststore check
+    - name: truststore store
       shell: "cat {{ searchguard_workdir }}/searchguard-ca/truststore.jks|base64 -w0"
       args:
         creates: /etc/elasticsearch/truststore.jks
