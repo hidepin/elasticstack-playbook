@@ -153,6 +153,18 @@
       args:
         creates: /etc/elasticsearch/keystore.jks
 
+    - name: create keystore csr
+      command: >
+        keytool -certreq
+        -alias {{ ansible_hostname }}
+        -keystore /etc/elasticsearch/keystore.jks
+        -file /etc/elasticsearch/keystore.csr
+        -keyalg    RSA
+        -keypass password
+        -storepass password
+        -dname "CN={{ ansible_nodename }},OU=client,O=client,C=JP"
+        -ext "san=dns:{{ ansible_nodename }},ip:{{ ansible_default_ipv4.address }},dns:localhost,ip:127.0.0.1,oid:1.2.3.4.5.5"
+
   when: not keystore_stat.stat.exists
 
 - name: truststore deploy
