@@ -11,8 +11,9 @@ es_cluster_name: 'escluster'
 searchguard_enabled: False
 searchguard_version: "18"
 searchguard_ca_dir: "/etc/elasticsearch/searchguard"
+searchguard_admin: { name: 'admin', countryName: 'JP', organizationName: 'Local', commonName: 'admin'}
 searchguard_openssl_cnf:
-  - name: root-ca
+  - name: 'root-ca'
     root: True
     ca_dn:
       - { name: 'countryName', value: 'JP' }
@@ -23,7 +24,7 @@ searchguard_openssl_cnf:
       - { name: 'keyUsage', value: 'critical,keyCertSign,cRLSign' }
       - { name: 'subjectKeyIdentifier', value: 'hash' }
     x509_extensions: signing_ca_ext
-  - name: signing-ca
+  - name: 'signing-ca'
     root: False
     ca_dn:
       - { name: 'countryName', value: 'JP' }

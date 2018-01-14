@@ -33,11 +33,11 @@
     mode: "{{ item.mode}}"
     state: directory
   with_items:
-    - { path: "{{ searchguard_ca_dir }}", owner: 'root', group: 'elasticsearch', mode: '0755' }
-    - { path: "{{ searchguard_ca_dir }}/searchguard-ca", owner: 'root', group: 'root', mode: '0700' }
-    - { path: "{{ searchguard_ca_dir }}/searchguard-ca/certs", owner: 'root', group: 'root', mode: '0700' }
-    - { path: "{{ searchguard_ca_dir }}/searchguard-ca/db", owner: 'root', group: 'root', mode: '0700' }
-    - { path: "{{ searchguard_ca_dir }}/searchguard-ca/private", owner: 'root', group: 'root', mode: '0700' }
+    - { path: "{{ searchguard_ca_dir }}", owner: 'root', group: 'elasticsearch', mode: '0750' }
+    - { path: "{{ searchguard_ca_dir }}/searchguard-ca", owner: 'root', group: 'elasticsearch', mode: '0750' }
+    - { path: "{{ searchguard_ca_dir }}/searchguard-ca/certs", owner: 'root', group: 'elasticsearch', mode: '0750' }
+    - { path: "{{ searchguard_ca_dir }}/searchguard-ca/db", owner: 'root', group: 'elasticsearch', mode: '0750' }
+    - { path: "{{ searchguard_ca_dir }}/searchguard-ca/private", owner: 'root', group: 'elasticsearch', mode: '0750' }
 
 - name: create searchguard ca index file
   command: "touch {{ searchguard_ca_dir }}/searchguard-ca/db/{{ item.name }}.index"
@@ -136,27 +136,27 @@
     path: "{{ searchguard_ca_dir }}/keystore.jks"
   register: keystore_stat
 
+- name: truststore deploy
+  shell: "echo {{ elasticsearch_truststore.stdout|default() }}|base64 -d > {{ searchguard_ca_dir }}/truststore.jks"
+  args:
+    creates: "{{ searchguard_ca_dir }}/truststore.jks"
+
+- name: chain-ca pem deploy
+  shell: "echo {{ elasticsearch_chain_ca_pem.stdout|default() }}|base64 -d > {{ searchguard_ca_dir }}/chain-ca.pem"
+  args:
+    creates: "{{ searchguard_ca_dir }}/chain-ca.pem"
+
+- name: siginig-ca crt deploy
+  shell: "echo {{ elasticsearch_signing_ca_crt.stdout|default() }}|base64 -d > {{ searchguard_ca_dir }}/searchguard-ca/signing-ca.crt"
+  args:
+    creates: "{{ searchguard_ca_dir }}/searchguard-ca/signing-ca.crt"
+
+- name: siginig-ca private key deploy
+  shell: "echo {{ elasticsearch_signing_ca_private_key.stdout|default() }}|base64 -d > {{ searchguard_ca_dir }}/searchguard-ca/private/signing-ca.key"
+  args:
+    creates: "{{ searchguard_ca_dir }}/searchguard-ca/private/signing-ca.key"
+
 - block:
-    - name: truststore deploy
-      shell: "echo {{ elasticsearch_truststore.stdout|default() }}|base64 -d > {{ searchguard_ca_dir }}/truststore.jks"
-      args:
-        creates: "{{ searchguard_ca_dir }}/truststore.jks"
-
-    - name: chain-ca pem deploy
-      shell: "echo {{ elasticsearch_chain_ca_pem.stdout|default() }}|base64 -d > {{ searchguard_ca_dir }}/chain-ca.pem"
-      args:
-        creates: "{{ searchguard_ca_dir }}/chain-ca.pem"
-
-    - name: siginig-ca crt deploy
-      shell: "echo {{ elasticsearch_signing_ca_crt.stdout|default() }}|base64 -d > {{ searchguard_ca_dir }}/searchguard-ca/signing-ca.crt"
-      args:
-        creates: "{{ searchguard_ca_dir }}/searchguard-ca/signing-ca.crt"
-
-    - name: siginig-ca private key deploy
-      shell: "echo {{ elasticsearch_signing_ca_private_key.stdout|default() }}|base64 -d > {{ searchguard_ca_dir }}/searchguard-ca/private/signing-ca.key"
-      args:
-        creates: "{{ searchguard_ca_dir }}/searchguard-ca/private/signing-ca.key"
-
     - name: create keystore.jks
       command: >
         keytool -genkeypair
@@ -211,3 +211,62 @@
         -alias {{ ansible_hostname }}
 
   when: not keystore_stat.stat.exists
+
+- name: "check {{ searchguard_admin.name }}.jks"
+  stat:
+    path: "{{ searchguard_ca_dir }}/{{ searchguard_admin.name}}.jks"
+  register: "searchguard_admin_stat"
+
+- block:
+    - name: "create {{ searchguard_admin.name }}.jks"
+      command: >
+        keytool -genkeypair
+        -alias {{ searchguard_admin.name }}
+        -keystore {{ searchguard_ca_dir }}/{{ searchguard_admin.name }}.jks
+        -keyalg    RSA
+        -keysize   2048
+        -validity  3650
+        -sigalg SHA256withRSA
+        -keypass password
+        -storepass password
+        -dname "CN={{ searchguard_admin.commonName }},O={{ searchguard_admin.organizationName }},C={{ searchguard_admin.countryName }}"
+      args:
+        creates: "{{ searchguard_ca_dir }}/{{ searchguard_admin.name }}.jks"
+
+    - name: "create {{ searchguard_admin.name }} csr"
+      command: >
+        keytool -certreq
+        -alias {{ searchguard_admin.name }}
+        -keystore {{ searchguard_ca_dir }}/{{ searchguard_admin.name }}.jks
+        -file {{ searchguard_ca_dir }}/{{ searchguard_admin.name }}.csr
+        -keyalg  RSA
+        -keypass password
+        -storepass password
+        -dname "CN={{ searchguard_admin.commonName }},O={{ searchguard_admin.organizationName }},C={{ searchguard_admin.countryName }}"
+      args:
+        creates: "{{ searchguard_ca_dir }}/{{ searchguard_admin.name }}.csr"
+
+    - name: "create {{ searchguard_admin.name }} pem"
+      command: >
+        openssl ca
+        -config {{ searchguard_ca_dir }}/signing-ca.cnf
+        -in {{ searchguard_ca_dir }}/{{ searchguard_admin.name }}.csr
+        -out {{ searchguard_ca_dir }}/{{ searchguard_admin.name }}.pem
+        -notext
+        -extensions v3_req
+        -extensions server_ext
+        -batch
+        -passin pass:password
+      args:
+        creates: "{{ searchguard_ca_dir }}/{{ searchguard_admin.name }}.pem"
+
+    - name: "import chain-ca {{ searchguard_admin.name }}"
+      shell: >
+        cat {{ searchguard_ca_dir }}/chain-ca.pem {{ searchguard_ca_dir }}/{{ searchguard_admin.name }}.pem | keytool
+        -importcert \
+        -keystore {{ searchguard_ca_dir }}/{{ searchguard_admin.name }}.jks
+        -storepass password
+        -noprompt
+        -alias {{ searchguard_admin.name }}
+
+  when: not searchguard_admin_stat.stat.exists
