@@ -10,7 +10,7 @@ elasticsearch_plugins:
 es_cluster_name: 'escluster'
 searchguard_enabled: False
 searchguard_version: "18"
-searchguard_workdir: "/tmp"
+searchguard_ca_dir: "/etc/elasticsearch/searchguard"
 searchguard_openssl_cnf:
   - name: root-ca
     root: True

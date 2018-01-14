@@ -16,117 +16,117 @@
   retries: 3
   delay: 5
 
+- name: openssl install
+  package:
+    name: openssl
+    state: present
+  register: result
+  until: result | success
+  retries: 3
+  delay: 5
+
+- name: create searchguard ca dir
+  file:
+    path: "{{ item.path }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "{{ item.mode}}"
+    state: directory
+  with_items:
+    - { path: "{{ searchguard_ca_dir }}", owner: 'root', group: 'elasticsearch', mode: '0755' }
+    - { path: "{{ searchguard_ca_dir }}/searchguard-ca", owner: 'root', group: 'root', mode: '0700' }
+    - { path: "{{ searchguard_ca_dir }}/searchguard-ca/certs", owner: 'root', group: 'root', mode: '0700' }
+    - { path: "{{ searchguard_ca_dir }}/searchguard-ca/db", owner: 'root', group: 'root', mode: '0700' }
+    - { path: "{{ searchguard_ca_dir }}/searchguard-ca/private", owner: 'root', group: 'root', mode: '0700' }
+
+- name: create searchguard ca index file
+  command: "touch {{ searchguard_ca_dir }}/searchguard-ca/db/{{ item.name }}.index"
+  args:
+    creates: "{{ searchguard_ca_dir }}/searchguard-ca/db/{{ item.name }}.index"
+  with_items: "{{ searchguard_openssl_cnf }}"
+
+- name: create searchguard ca serial file
+  shell: "openssl rand -hex 16 > {{ searchguard_ca_dir }}/searchguard-ca/db/{{ item.name }}.serial"
+  args:
+    creates: "{{ searchguard_ca_dir }}/searchguard-ca/db/{{ item.name}}.serial"
+  with_items: "{{ searchguard_openssl_cnf }}"
+
 - name: searchguard ca config setting
   template:
     src: ca.cnf.j2
-    dest: "/etc/elasticsearch/{{ item.name }}.cnf"
+    dest: "{{ searchguard_ca_dir }}/{{ item.name }}.cnf"
     owner: root
-    group: root
+    group: elasticsearch
     mode: 0660
   with_items: "{{ searchguard_openssl_cnf }}"
 
 - name: check truststore.jks
   stat:
-    path: /etc/elasticsearch/truststore.jks
+    path: "{{ searchguard_ca_dir }}/truststore.jks"
   register: truststore_stat
 
 - block:
-    - name: openssl install
-      package:
-        name: openssl
-        state: present
-      register: result
-      until: result | success
-      retries: 3
-      delay: 5
-
-    - name: create searchguard ca dir
-      file:
-        path: "{{ item.path }}"
-        owner: "{{ item.owner }}"
-        group: "{{ item.group }}"
-        mode: "{{ item.mode}}"
-        state: directory
-      with_items:
-        - { path: "{{ searchguard_workdir }}/searchguard-ca", owner: 'root', group: 'root', mode: '0700' }
-        - { path: "{{ searchguard_workdir }}/searchguard-ca/certs", owner: 'root', group: 'root', mode: '0700' }
-        - { path: "{{ searchguard_workdir }}/searchguard-ca/db", owner: 'root', group: 'root', mode: '0700' }
-        - { path: "{{ searchguard_workdir }}/searchguard-ca/private", owner: 'root', group: 'root', mode: '0700' }
-
-    - name: create searchguard ca index file
-      command: "touch {{ searchguard_workdir }}/searchguard-ca/db/{{ item.name }}.index"
-      args:
-        creates: "{{ searchguard_workdir }}/searchguard-ca/db/{{ item.name }}.index"
-      with_items: "{{ searchguard_openssl_cnf }}"
-
-    - name: create searchguard ca serial file
-      shell: "openssl rand -hex 16 > {{ searchguard_workdir }}/searchguard-ca/db/{{ item.name }}.serial"
-      args:
-        creates: "{{ searchguard_workdir }}/searchguard-ca/db/serial"
-      with_items: "{{ searchguard_openssl_cnf }}"
-
     - name: create searchguard ca private key and csr
       command: >
         openssl req -new
-        -config /etc/elasticsearch/{{ item.name }}.cnf
-        -out {{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.csr
-        -keyout {{ searchguard_workdir }}/searchguard-ca/private/{{ item.name }}.key
+        -config {{ searchguard_ca_dir }}/{{ item.name }}.cnf
+        -out {{ searchguard_ca_dir }}/searchguard-ca/{{ item.name }}.csr
+        -keyout {{ searchguard_ca_dir }}/searchguard-ca/private/{{ item.name }}.key
         -batch
         -passout pass:password
       args:
-        creates: "{{ searchguard_workdir }}/searchguard-ca/private/{{ item.name }}.key"
+        creates: "{{ searchguard_ca_dir }}/searchguard-ca/private/{{ item.name }}.key"
       with_items: "{{ searchguard_openssl_cnf }}"
 
     - name: create searchguard ca crt
       command: >
         openssl ca{% if item.root %} -selfsign{% endif %}
-        -config /etc/elasticsearch/root-ca.cnf
-        -in {{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.csr
-        -out {{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.crt
+        -config {{ searchguard_ca_dir }}/root-ca.cnf
+        -in {{ searchguard_ca_dir }}/searchguard-ca/{{ item.name }}.csr
+        -out {{ searchguard_ca_dir }}/searchguard-ca/{{ item.name }}.crt
         -extensions {{ item.name|replace('-', '_') }}_ext
         -batch
         -passin pass:password
       args:
-        creates: "{{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.crt"
+        creates: "{{ searchguard_ca_dir }}/searchguard-ca/{{ item.name }}.crt"
       with_items: "{{ searchguard_openssl_cnf }}"
 
     - name: create ca crt pem
       command: >
         openssl x509
-        -in {{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.crt
-        -out {{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.pem
+        -in {{ searchguard_ca_dir }}/searchguard-ca/{{ item.name }}.crt
+        -out {{ searchguard_ca_dir }}/searchguard-ca/{{ item.name }}.pem
         -outform PEM
       args:
-        creates: "{{ searchguard_workdir }}/searchguard-ca/{{ item.name }}.pem"
+        creates: "{{ searchguard_ca_dir }}/searchguard-ca/{{ item.name }}.pem"
       with_items: "{{ searchguard_openssl_cnf }}"
 
     - name: create truststore.jks
       command: >
         keytool -import
-        -keystore {{ searchguard_workdir }}/searchguard-ca/truststore.jks
+        -keystore {{ searchguard_ca_dir }}/truststore.jks
         -storepass password
         -noprompt
         -alias root-ca-chain
-        -file {{ searchguard_workdir }}/searchguard-ca/root-ca.pem
+        -file {{ searchguard_ca_dir }}/searchguard-ca/root-ca.pem
       args:
-        creates: "{{ searchguard_workdir }}/searchguard-ca/truststore.jks"
+        creates: "{{ searchguard_ca_dir }}/truststore.jks"
 
     - name: truststore store
-      shell: "cat {{ searchguard_workdir }}/searchguard-ca/truststore.jks|base64 -w0"
-      args:
-        creates: /etc/elasticsearch/truststore.jks
+      shell: "cat {{ searchguard_ca_dir }}/truststore.jks|base64 -w0"
       register: elasticsearch_truststore
 
     - name: chain-ca pem store
-      shell: "cat {{ searchguard_workdir }}/searchguard-ca/signing-ca.pem {{ searchguard_workdir }}/searchguard-ca/signing-ca.pem|base64 -w0"
-      args:
-        creates: /etc/elasticsearch/keystore.jks
+      shell: "cat {{ searchguard_ca_dir }}/searchguard-ca/signing-ca.pem {{ searchguard_ca_dir }}/searchguard-ca/root-ca.pem|base64 -w0"
       register: elasticsearch_chain_ca_pem
 
-    - name: delete searchguard ca dir
-      file:
-        path: "{{ searchguard_workdir }}/searchguard-ca"
-        state: absent
+    - name: signing-ca crt store
+      shell: "cat {{ searchguard_ca_dir }}/searchguard-ca/signing-ca.crt|base64 -w0"
+      register: elasticsearch_signing_ca_crt
+
+    - name: signing-ca private key store
+      shell: "cat {{ searchguard_ca_dir }}/searchguard-ca/private/signing-ca.key|base64 -w0"
+      register: elasticsearch_signing_ca_private_key
 
   run_once: true
   when: not truststore_stat.stat.exists
@@ -137,11 +137,31 @@
   register: keystore_stat
 
 - block:
+    - name: truststore deploy
+      shell: "echo {{ elasticsearch_truststore.stdout|default() }}|base64 -d > {{ searchguard_ca_dir }}/truststore.jks"
+      args:
+        creates: "{{ searchguard_ca_dir }}/truststore.jks"
+
+    - name: chain-ca pem deploy
+      shell: "echo {{ elasticsearch_chain_ca_pem.stdout|default() }}|base64 -d > {{ searchguard_ca_dir }}/chain-ca.pem"
+      args:
+        creates: "{{ searchguard_ca_dir }}/chain-ca.pem"
+
+    - name: siginig-ca crt deploy
+      shell: "echo {{ elasticsearch_signing_ca_crt.stdout|default() }}|base64 -d > {{ searchguard_ca_dir }}/searchguard-ca/signing-ca.crt"
+      args:
+        creates: "{{ searchguard_ca_dir }}/searchguard-ca/signing-ca.crt"
+
+    - name: siginig-ca private key deploy
+      shell: "echo {{ elasticsearch_signing_ca_private_key.stdout|default() }}|base64 -d > {{ searchguard_ca_dir }}/searchguard-ca/private/signing-ca.key"
+      args:
+        creates: "{{ searchguard_ca_dir }}/searchguard-ca/private/signing-ca.key"
+
     - name: create keystore.jks
       command: >
         keytool -genkeypair
         -alias {{ ansible_hostname }}
-        -keystore /etc/elasticsearch/keystore.jks
+        -keystore {{ searchguard_ca_dir }}/keystore.jks
         -keyalg    RSA
         -keysize   2048
         -validity  3650
@@ -151,23 +171,43 @@
         -dname "CN={{ ansible_nodename }},OU=client,O=client,C=JP"
         -ext "san=dns:{{ ansible_nodename }},ip:{{ ansible_default_ipv4.address }},dns:localhost,ip:127.0.0.1,oid:1.2.3.4.5.5"
       args:
-        creates: /etc/elasticsearch/keystore.jks
+        creates: "{{ searchguard_ca_dir }}/keystore.jks"
 
     - name: create keystore csr
       command: >
         keytool -certreq
         -alias {{ ansible_hostname }}
-        -keystore /etc/elasticsearch/keystore.jks
-        -file /etc/elasticsearch/keystore.csr
-        -keyalg    RSA
+        -keystore {{ searchguard_ca_dir }}/keystore.jks
+        -file {{ searchguard_ca_dir }}/keystore.csr
+        -keyalg  RSA
         -keypass password
         -storepass password
         -dname "CN={{ ansible_nodename }},OU=client,O=client,C=JP"
         -ext "san=dns:{{ ansible_nodename }},ip:{{ ansible_default_ipv4.address }},dns:localhost,ip:127.0.0.1,oid:1.2.3.4.5.5"
+      args:
+        creates: "{{ searchguard_ca_dir }}/keystore.csr"
+
+    - name: create keystore pem
+      command: >
+        openssl ca
+        -config {{ searchguard_ca_dir }}/signing-ca.cnf
+        -in {{ searchguard_ca_dir }}/keystore.csr
+        -out {{ searchguard_ca_dir }}/keystore.pem
+        -notext
+        -extensions v3_req
+        -extensions server_ext
+        -batch
+        -passin pass:password
+      args:
+        creates: "{{ searchguard_ca_dir }}/keystore.pem"
+
+    - name: import chain-ca keystore
+      shell: >
+        cat {{ searchguard_ca_dir }}/chain-ca.pem {{ searchguard_ca_dir }}/keystore.pem | keytool
+        -importcert \
+        -keystore {{ searchguard_ca_dir }}/keystore.jks
+        -storepass password
+        -noprompt
+        -alias {{ ansible_hostname }}
 
   when: not keystore_stat.stat.exists
-
-- name: truststore deploy
-  shell: "echo {{ elasticsearch_truststore.stdout|default() }}|base64 -d > /etc/elasticsearch/truststore.jks"
-  args:
-    creates: /etc/elasticsearch/truststore.jks
