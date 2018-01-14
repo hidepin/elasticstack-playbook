@@ -133,7 +133,7 @@
 
 - name: check keystore.jks
   stat:
-    path: /etc/elasticsearch/keystore.jks
+    path: "{{ searchguard_ca_dir }}/keystore.jks"
   register: keystore_stat
 
 - block:
