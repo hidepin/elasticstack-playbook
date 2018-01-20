@@ -33,6 +33,7 @@
     changed_when: false
 
   when: >
+    rhel_subscription_enabled and
     ansible_distribution == "RedHat" and
     rhel_subscription is defined
 
@@ -48,7 +49,7 @@
     register: is_yum_proxy_setting
     when: >
       ansible_os_family == "RedHat" and
-      not ansible_distribution == "Fedora"
+      ansible_distribution != "Fedora"
 
   - name: dnf proxy settings
     template:
@@ -59,7 +60,7 @@
       mode: 0644
       backup: yes
     register: is_yum_proxy_setting
-    when: ansible_distribution == "Fedora"
+    when: ansible_distribution != "Fedora"
 
   always:
   - name: common backup settings
