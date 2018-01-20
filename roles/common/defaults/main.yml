@@ -8,6 +8,7 @@ proxy_env:
 #  username: 'username'
 #  password: 'password'
 #ntp_server: 172.16.111.1
+rhel_subscription_enabled: True
 grub_cfg_uefi: "/boot/efi/EFI/{{ ansible_distribution|lower }}/grub.cfg"
 grub_cfg_legacy: "/boot/grub2/grub.cfg"
 kdump_partition: "/dump"

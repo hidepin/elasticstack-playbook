@@ -44,7 +44,10 @@
     until: result | success
     retries: 3
     delay: 5
-    when: ntp_server is defined
+    when: >
+      ntp_server is defined and
+      ( rhel_subscription_enabled or
+      ansible_distribution != "RedHat" )
 
   - name: (rhel7 family) chrony.conf settings
     template:
@@ -85,7 +88,7 @@
       backup: yes
     register: is_rsyslog_setting
     notify: rsyslog restart
-    when: not ansible_distribution == "Fedora"
+    when: ansible_distribution != "Fedora"
 
   - name: (rhel7 family) abrt check
     stat:
@@ -247,4 +250,6 @@
 
 - name: reboot after kdump setting
   import_tasks: reboot.yml
-  when: runlevel.stdout != "multi-user.target" or is_grub_setting|changed
+  when: >
+    runlevel.stdout != "multi-user.target" or
+    is_grub_setting|changed
