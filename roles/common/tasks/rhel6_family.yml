@@ -59,7 +59,10 @@
   until: result | success
   retries: 3
   delay: 5
-  when: ntp_server is defined
+  when: >
+    ntp_server is defined and
+    ( rhel_subscription_enabled or
+    ansible_distribution != "RedHat" )
 
 - name: (rhel6 family) ntp step-tickers settings
   template:

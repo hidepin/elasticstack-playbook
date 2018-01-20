@@ -58,6 +58,7 @@ OS初期インストール時の共通設定。
 - rhel_subscription.username # rhelのsubscription設定する場合に指定 (rhel_subscriptionを設定していれば、省略時シナリオ実行時に入力することになる)
 - rhel_subscription.password # rhelのsubscription設定する場合に指定 (rhel_subscriptionを設定していれば、省略時シナリオ実行時に入力することになる)
 - ntp_server                 # ntpサーバ
+- rhel_subscription_enabled  # RHELでサブスクリプションを登録するかどうかを指定
 - grub_cfg_uefi              # UEFIモードでgrub2-mkconfigで指定するパスを指定
 - grub_cfg_legacy            # BIOSモードでgrub2-mkconfigで指定するパスを指定
 - kdump_partition            # kdumpのvmcoreを出力するパーティションを指定
