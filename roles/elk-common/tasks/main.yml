@@ -36,7 +36,8 @@
     - java-1.8.0-openjdk-debuginfo
     - tzdata-java
   when: >
-    'elk' in group_names or
+    rhel_subscription_enabled and
+    ( 'elk' in group_names or
     'elasticsearch' in group_names or
     'logstash' in group_names or
-    'aio_standalone' in group_names
+    'aio_standalone' in group_names )
