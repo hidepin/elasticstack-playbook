@@ -4,6 +4,7 @@ kibana_version: ''
 kibana_plugins:
   - { plugin: 'x-pack', creates: '/usr/share/kibana/plugins/x-pack/NOTICE.txt' }
 es_cluster_name: 'escluster'
+xpack_apm_ui_enabled: False
 xpack_graph_enabled: False
 xpack_ml_enabled: False
 xpack_monitoring_enabled: True

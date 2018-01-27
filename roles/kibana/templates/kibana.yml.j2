@@ -104,6 +104,9 @@ server.host: 0.0.0.0
 # translations.
 #i18n.defaultLocale: "en"
 
+{% if not xpack_apm_ui_enabled %}
+xpack.apm.ui.enabled: false
+{% endif %}
 {% if not xpack_graph_enabled %}
 xpack.graph.enabled: false
 {% endif %}
