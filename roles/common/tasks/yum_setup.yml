@@ -11,6 +11,7 @@
   - name: input rhel_subscription password
     pause:
       prompt: "input rhel subscription password"
+      private: yes
     run_once: true
     register: rhel_subscription_password
     when: rhel_subscription.password is undefined

@@ -46,8 +46,7 @@
     delay: 5
     when: >
       ntp_server is defined and
-      ( rhel_subscription_enabled or
-      ansible_distribution != "RedHat" )
+      update_pkg_enabled
 
   - name: (rhel7 family) chrony.conf settings
     template:
@@ -191,7 +190,9 @@
     until: result | success
     retries: 3
     delay: 5
-    when: ansible_distribution == "Fedora"
+    when: >
+      update_pkg_enabled and
+      ansible_distribution == "Fedora"
 
   - name: (rhel7 family) create tuned profile dir
     file:
