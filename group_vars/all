@@ -4,6 +4,7 @@
 rhel_subscription:
   username: 'username'
   password: 'password'
+rhel_subscription_enabled: True
 es_cluster_name: 'escluster'
 xpack_apm_ui_enabled: False
 xpack_graph_enabled: False
