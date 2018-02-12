@@ -32,7 +32,7 @@
     file:
       path: "{{ partition_item.path }}"
       owner: "elasticsearch"
-      group: "elasticserach"
+      group: "elasticsearch"
       mode: "0755"
       state: directory
 
