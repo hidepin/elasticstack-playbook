@@ -25,6 +25,12 @@
   retries: 3
   delay: 5
 
+- name: setup es partition
+  include_tasks: es_partition.yml
+  with_items: "{{ es_external_disk }}"
+  loop_control:
+    loop_var: partition_item
+
 - block:
   - name: create elasticsearch systemd dir
     file:

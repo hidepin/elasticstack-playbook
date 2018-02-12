@@ -10,6 +10,8 @@ elasticsearch_plugins:
 es_cluster_name: 'escluster'
 es_mx: "{{ ansible_memtotal_mb // 2 }}"
 es_ms: "{{ ansible_memtotal_mb // 2 }}"
+es_external_disk:
+  - { disk: "", path: "" }
 xpack_apm_ui_enabled: False
 xpack_grokdebugger_enabled: True
 xpack_searchprofiler_enabled: True

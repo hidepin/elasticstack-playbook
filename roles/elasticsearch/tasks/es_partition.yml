@@ -1,0 +1,43 @@
+---
+# file: roles/elasticsearch/tasks/es_partition.yml
+- block:
+  - name: "create es dir [{{ partition_item.path }}]"
+    file:
+      path: "{{ partition_item.path }}"
+      owner: "elasticsearch"
+      group: "elasticsearch"
+      mode: "0755"
+      state: directory
+
+  - name: "parted device [{{ partition_item.disk }}]"
+    parted:
+      device: "{{ partition_item.disk }}"
+      label: gpt
+      number: 1
+      state: present
+
+  - name: "create fs [{{ partition_item.path }}]"
+    filesystem:
+      fstype: xfs
+      dev: "{{ partition_item.disk }}1"
+
+  - name: "mount disk [{{ partition_item.path }}]"
+    mount:
+      path: "{{ partition_item.path }}"
+      src: "{{ partition_item.disk }}1"
+      fstype: xfs
+      state: mounted
+
+  - name: "mounted partition permission [{{ partition_item.path }}]"
+    file:
+      path: "{{ partition_item.path }}"
+      owner: "elasticsearch"
+      group: "elasticserach"
+      mode: "0755"
+      state: directory
+
+  when: >
+    partition_item.disk is defined and
+    partition_item.disk != "" and
+    partition_item.path is defined and
+    partition_item.path != ""
