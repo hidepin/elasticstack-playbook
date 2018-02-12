@@ -2,11 +2,11 @@
 # defaults file for elasticsearch
 elasticsearch_version: ''
 elasticsearch_plugins:
-  - { plugin: 'x-pack', creates: '/usr/share/elasticsearch/plugins/x-pack/plugin-descriptor.properties' }
-  - { plugin: 'analysis-icu', creates: '/usr/share/elasticsearch/plugins/analysis-icu/plugin-descriptor.properties' }
-  - { plugin: 'analysis-kuromoji', creates: '/usr/share/elasticsearch/plugins/analysis-kuromoji/plugin-descriptor.properties' }
-  - { plugin: 'ingest-geoip', creates: '/usr/share/elasticsearch/plugins/ingest-geoip/plugin-descriptor.properties' }
-  - { plugin: 'ingest-user-agent', creates: '/usr/share/elasticsearch/plugins/ingest-user-agent/plugin-descriptor.properties' }
+  - { plugin: 'x-pack', creates: '/usr/share/elasticsearch/plugins/x-pack' }
+  - { plugin: 'analysis-icu', creates: '/usr/share/elasticsearch/plugins/analysis-icu' }
+  - { plugin: 'analysis-kuromoji', creates: '/usr/share/elasticsearch/plugins/analysis-kuromoji' }
+  - { plugin: 'ingest-geoip', creates: '/usr/share/elasticsearch/plugins/ingest-geoip' }
+  - { plugin: 'ingest-user-agent', creates: '/usr/share/elasticsearch/plugins/ingest-user-agent' }
 es_cluster_name: 'escluster'
 es_mx: "{{ ansible_memtotal_mb // 2 }}"
 es_ms: "{{ ansible_memtotal_mb // 2 }}"
