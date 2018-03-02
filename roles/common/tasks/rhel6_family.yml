@@ -61,8 +61,7 @@
   delay: 5
   when: >
     ntp_server is defined and
-    ( rhel_subscription_enabled or
-    ansible_distribution != "RedHat" )
+    update_pkg_enabled
 
 - name: (rhel6 family) ntp step-tickers settings
   template:

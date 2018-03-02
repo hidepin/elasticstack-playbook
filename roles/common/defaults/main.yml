@@ -40,6 +40,7 @@ tuned_profile_parameter:
       - { option: 'net.ipv4.tcp_keepalive_probes', value: '5' }
       - { option: 'net.ipv4.tcp_keepalive_time', value: '60' }
 kernel_update: True
+update_pkg_enabled: True
 update_pkg:
 #  - glibc
 #  - glibc-common

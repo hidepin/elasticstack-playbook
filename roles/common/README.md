@@ -72,6 +72,7 @@ OS初期インストール時の共通設定。
 - tuned_profile              # activeにするtuned profile名を設定
 - tuned_profile_parameter    # tunedの設定
 - force_install_pkg          # インストール済みであっても強制インストールするパッケージリスト(kernel等)
+- update_pkg_enabled         # update_pkgをアップデートするかどうかを指定
 - update_pkg                 # アップデートするパッケージ一覧
 
 # 依存関係

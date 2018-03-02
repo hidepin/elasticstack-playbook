@@ -3,6 +3,13 @@
 - name: register subscription and yum proxy setting
   import_tasks: yum_setup.yml
 
+- name: set update_pkg_enabled
+  set_fact:
+    update_pkg_enabled: False
+  when: >
+    ansible_distribution == "RedHat" and
+    not rhel_subscription_enabled
+
 - name: packages install for ansible
   package:
     name: "{{ item }}"
@@ -15,11 +22,9 @@
     - openssh-clients
     - libselinux-python
   when: >
-    ( rhel_subscription_enabled and
-    ansible_distribution == "RedHat" ) or
-    ( ansible_os_family == "RedHat" and
-    ansible_distribution != "RedHat" and
-    ansible_distribution != "Fedora" )
+    update_pkg_enabled and
+    ansible_os_family == "RedHat" and
+    ansible_distribution != "Fedora"
 
 - name: disable selinux
   shell: setenforce Permissive
@@ -80,8 +85,8 @@
   import_tasks: kernel_update.yml
   when: >
     kernel_update and
-    not ( not rhel_subscription_enabled and
-    ansible_distribution == "RedHat" )
+    ( rhel_subscription_enabled or
+    ansible_distribution != "RedHat" )
 
 - name: update package
   package:
@@ -93,8 +98,7 @@
   delay: 5
   with_items: "{{ update_pkg }}"
   when: >
-    rhel_subscription_enabled or
-    ansible_distribution != "RedHat"
+    update_pkg_enabled
 
 - name: Add common group
   group:
