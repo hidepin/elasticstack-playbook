@@ -9,7 +9,7 @@
     name: "{{ (kibana_version == '') | ternary('kibana',['kibana', kibana_version]|join('-')) }}"
     state: present
   register: result
-  until: result | success
+  until: result is success
   retries: 3
   delay: 5
 
@@ -24,7 +24,7 @@
   notify: kibana restart
   with_items: "{{ kibana_plugins }}"
   register: result
-  until: result | success
+  until: result is success
   retries: 3
   delay: 5
 

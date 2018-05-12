@@ -9,7 +9,7 @@
     name: "{{ (logstash_version == '') | ternary('logstash',['logstash', logstash_version]|join('-')) }}"
     state: present
   register: result
-  until: result | success
+  until: result is success
   retries: 3
   delay: 5
 
@@ -20,6 +20,6 @@
     creates: "{{ item.creates }}"
   with_items: "{{ logstash_plugins }}"
   register: result
-  until: result | success
+  until: result is success
   retries: 3
   delay: 5
