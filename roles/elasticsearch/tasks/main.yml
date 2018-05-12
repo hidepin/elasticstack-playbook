@@ -9,7 +9,7 @@
     name: "{{ (elasticsearch_version == '') | ternary('elasticsearch',['elasticsearch', elasticsearch_version]|join('-')) }}"
     state: present
   register: result
-  until: result | success
+  until: result is success
   retries: 3
   delay: 5
 
@@ -21,7 +21,7 @@
   notify: elasticsearch restart
   with_items: "{{ elasticsearch_plugins }}"
   register: result
-  until: result | success
+  until: result is success
   retries: 3
   delay: 5
 

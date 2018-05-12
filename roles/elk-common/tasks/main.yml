@@ -28,7 +28,7 @@
     state: latest
     enablerepo: "{{ (ansible_distribution == 'RedHat') | ternary('rhel-7-server-debug-rpms','base-debuginfo') }}"
   register: result
-  until: result | success
+  until: result is success
   retries: 3
   delay: 5
   with_items:
