@@ -2,7 +2,6 @@
 # defaults file for kibana
 kibana_version: ''
 kibana_plugins:
-  - { plugin: 'x-pack', creates: '/usr/share/kibana/plugins/x-pack' }
 es_cluster_name: 'escluster'
 xpack_apm_ui_enabled: False
 xpack_grokdebugger_enabled: True

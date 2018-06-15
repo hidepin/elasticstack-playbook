@@ -10,6 +10,7 @@
   shell: |
     /usr/share/elasticsearch/bin/elasticsearch-plugin remove {{ item.plugin }}
   with_items: "{{ elasticsearch_plugins }}"
+  when: elasticsearch_plugins is not none
 
 - name: elasticsearch remove
   package:
