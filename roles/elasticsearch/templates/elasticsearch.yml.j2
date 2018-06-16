@@ -105,6 +105,9 @@ xpack.ml.enabled: false
 {% if not xpack_monitoring_enabled %}
 xpack.monitoring.enabled: false
 {% endif %}
+{% if xpack_monitoring_enabled and xpack_monitoring_collection_enabled %}
+xpack.monitoring.collection.enabled: true
+{% endif %}
 {% if not xpack_security_enabled %}
 xpack.security.enabled: false
 {% endif %}

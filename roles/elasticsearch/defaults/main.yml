@@ -17,6 +17,7 @@ xpack_searchprofiler_enabled: True
 xpack_graph_enabled: False
 xpack_ml_enabled: False
 xpack_monitoring_enabled: True
+xpack_monitoring_collection_enabled: True
 xpack_reporting_enabled: False
 xpack_security_enabled: False
 xpack_watcher_enabled: False
