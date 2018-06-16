@@ -27,6 +27,7 @@
   until: result is success
   retries: 3
   delay: 5
+  when: kibana_plugins is not none
 
 - block:
   - name: kibana config setting

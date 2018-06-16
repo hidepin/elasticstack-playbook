@@ -10,6 +10,7 @@
   shell: |
     /usr/share/kibana/bin/kibana-plugin remove {{ item.plugin }}
   with_items: "{{ kibana_plugins }}"
+  when: kibana_plugins is not none
 
 - name: kibana remove
   package:

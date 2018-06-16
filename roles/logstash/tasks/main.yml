@@ -12,6 +12,7 @@
   until: result is success
   retries: 3
   delay: 5
+  when: logstash_plugins is not none
 
 - name: logstash plugin install
   shell: |

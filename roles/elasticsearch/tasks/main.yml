@@ -24,6 +24,7 @@
   until: result is success
   retries: 3
   delay: 5
+  when: elasticsearch_plugins is not none
 
 - name: setup es partition
   include_tasks: es_partition.yml
