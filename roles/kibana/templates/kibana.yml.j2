@@ -113,8 +113,8 @@ server.host: 0.0.0.0
 # Specifies locale to be used for all localizable strings, dates and number formats.
 #i18n.locale: "en"
 
-{% if not xpack_apm_ui_enabled %}
-xpack.apm.ui.enabled: false
+{% if not xpack_apm_enabled %}
+xpack.apm.enabled: false
 {% endif %}
 {% if not xpack_grokdebugger_enabled %}
 xpack.grokdebugger.enabled: false
@@ -122,18 +122,9 @@ xpack.grokdebugger.enabled: false
 {% if not xpack_searchprofiler_enabled %}
 xpack.searchprofiler.enabled: false
 {% endif %}
-{% if not xpack_graph_enabled %}
-xpack.graph.enabled: false
-{% endif %}
 {% if not xpack_ml_enabled %}
 xpack.ml.enabled: false
 {% endif %}
 {% if not xpack_monitoring_enabled %}
 xpack.monitoring.enabled: false
-{% endif %}
-{% if not xpack_reporting_enabled %}
-xpack.reporting.enabled: false
-{% endif %}
-{% if not xpack_security_enabled %}
-xpack.security.enabled: false
 {% endif %}

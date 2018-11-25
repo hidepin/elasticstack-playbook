@@ -3,12 +3,9 @@
 kibana_version: ''
 kibana_plugins:
 es_cluster_name: 'escluster'
-xpack_apm_ui_enabled: False
+xpack_apm_enabled: True
 xpack_grokdebugger_enabled: True
 xpack_searchprofiler_enabled: True
-xpack_graph_enabled: False
-xpack_ml_enabled: False
+xpack_ml_enabled: True
 xpack_monitoring_enabled: True
-xpack_reporting_enabled: False
-xpack_security_enabled: False
-xpack_watcher_enabled: False
+xpack_monitoring_collection_enabled: True
