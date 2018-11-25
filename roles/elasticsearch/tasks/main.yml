@@ -69,7 +69,7 @@
       dest: /etc/elasticsearch/jvm.options
       owner: root
       group: elasticsearch
-      mode: 0664
+      mode: 0660
       backup: yes
     register: is_elasticsearch_jvm_setting
     notify: elasticsearch restart

@@ -11,13 +11,9 @@ es_mx: "{{ ansible_memtotal_mb // 2 }}"
 es_ms: "{{ ansible_memtotal_mb // 2 }}"
 es_external_disk:
   - { disk: "", path: "" }
-xpack_apm_ui_enabled: False
+xpack_apm_enabled: True
 xpack_grokdebugger_enabled: True
 xpack_searchprofiler_enabled: True
-xpack_graph_enabled: False
-xpack_ml_enabled: False
+xpack_ml_enabled: True
 xpack_monitoring_enabled: True
 xpack_monitoring_collection_enabled: True
-xpack_reporting_enabled: False
-xpack_security_enabled: False
-xpack_watcher_enabled: False
