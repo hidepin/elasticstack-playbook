@@ -86,7 +86,7 @@
 
 - name: enable elasticsearch service
   service:
-    name: elasticsearch
+    name: elasticsearch.service
     state: started
     enabled: yes
     daemon_reload: yes

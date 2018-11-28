@@ -1,4 +1,7 @@
 ---
 # file: roles/elasticsearch/handlers/main.yml
 - name: elasticsearch restart
-  service: name=elasticsearch state=restarted daemon_reload=yes
+  service:
+    name: elasticsearch.service
+    state: restarted
+    daemon_reload: yes
