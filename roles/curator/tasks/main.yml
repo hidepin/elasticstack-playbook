@@ -11,11 +11,22 @@
       backup: yes
     register: is_curator_repo_setting
 
+  - name: curator-mainte.sh
+    template:
+      src: curator-mainte.sh
+      dest: /etc/cron.daily/curator-mainte.sh
+      owner: root
+      group: root
+      mode: 0700
+      backup: yes
+    register: is_curator_mainte_sh_setting
+
   always:
   - name: curator backup settings
     include_tasks: backup.yml
     with_flattened:
       - "{{ is_curator_repo_setting|default() }}"
+      - "{{ is_curator_mainte_sh_setting|default() }}"
     loop_control:
       loop_var: backup_item
 

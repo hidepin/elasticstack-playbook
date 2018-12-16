@@ -1,3 +1,5 @@
 ---
 # defaults file for curator
 curator_version: ''
+curator_index_age: 100
+curator_index_diskspace: 50
