@@ -63,9 +63,19 @@
       dest: /etc/logrotate.d/kibana
       owner: root
       group: root
-      mode: 0664
+      mode: 0644
       backup: yes
     register: is_kibana_logrotate_setting
+
+  - name: kibana tmpfiles.d setting
+    copy:
+      src: kibana.conf
+      dest: /etc/tmpfiles.d/kibana.conf
+      owner: root
+      group: root
+      mode: 0644
+      backup: yes
+    register: is_kibana_tmpfiles_d_setting
 
   always:
   - name: elk-common backup settings
@@ -73,6 +83,7 @@
     with_flattened:
       - "{{ is_kibana_setting|default() }}"
       - "{{ is_kibana_logrotate_setting|default() }}"
+      - "{{ is_kibana_tmpfiles_d_setting|default() }}"
     loop_control:
       loop_var: backup_item
 
